@@ -39,7 +39,7 @@ print('   Instance created. ID: {}'.format(instances[0].id))
 
 ### Wait for EC2 instance to be 'running'
 
-print('Waiting for AWS EC2 instance state to be 'running'')
+print('Waiting for AWS EC2 instance state to be "running"')
 instance = ec2.Instance(instances[0].id)
 state_code, state = utils.wait_for_instance_running(instance, timeout_seconds=600)
 print('   Instance state: {}'.format(instance.state['Name']))
