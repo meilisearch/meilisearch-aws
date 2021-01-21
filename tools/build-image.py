@@ -14,8 +14,7 @@ SECURITY_GROUP='MarketplaceSecurityGroup'
 
 USER_DATA =requests.get(
     'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/cloud-config.yaml'
-    .format(
-        MEILI_CLOUD_SCRIPTS_VERSION_TAG)
+    .format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 ).text
 
 ec2 = boto3.resource('ec2')
@@ -60,5 +59,3 @@ if health == utils.STATUS_OK:
 else:
     print('   Timeout waiting for health check')
     utils.terminate_instance_and_exit(instance)
-    
-    
