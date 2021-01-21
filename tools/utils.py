@@ -28,7 +28,7 @@ def wait_for_health_check(instance, timeout_seconds=None):
             if check_timeout(start_time, timeout_seconds) is STATUS_TIMEOUT:
                 return STATUS_TIMEOUT 
         try:
-            resp = requests.get("http://{}/health".format(instance.public_ip_address))
+            resp = requests.get('http://{}/health'.format(instance.public_ip_address))
             if resp.status_code >=200 and resp.status_code < 300:
                 return STATUS_OK
         except Exception as e:
@@ -36,9 +36,9 @@ def wait_for_health_check(instance, timeout_seconds=None):
         time.sleep(1)
 
 def terminate_instance_and_exit(instance):
-    print("   Terminating instance {}".format(instance.id))
+    print('   Terminating instance {}'.format(instance.id))
     instance.terminate()
-    print("EXITING PROGRAM WITH STATUS CODE 1")
+    print('EXITING PROGRAM WITH STATUS CODE 1')
     exit(1)
 
 def check_timeout(start_time, timeout_seconds):
