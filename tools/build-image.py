@@ -1,16 +1,21 @@
 import requests
 import time
 import boto3
+from os.path import expanduser
+import os
+from datetime import datetime
 
 import utils
 
 ### Setup environment and settings
 
 MEILI_CLOUD_SCRIPTS_VERSION_TAG='v0.18.1'
-
+BASE_OS_NAME='Debian-10.3'
+SNAPSHOT_NAME="MeiliSearch-{}-{}".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
 SSH_KEY='MarketplaceKeyPair'
 INSTANCE_TYPE='t2.small'
 SECURITY_GROUP='MarketplaceSecurityGroup'
+DEBIAN_BASE_IMAGE_ID='ami-00000f9d1b75a36f8'
 
 USER_DATA =requests.get(
     'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/cloud-config.yaml'
@@ -19,12 +24,11 @@ USER_DATA =requests.get(
 
 ec2 = boto3.resource('ec2')
 
-
 ### Create EC2 instance to setup MeiliSearch
 
 print('Creating AWS EC2 instance')
 instances = ec2.create_instances(
-    ImageId='ami-00000f9d1b75a36f8',
+    ImageId=DEBIAN_BASE_IMAGE_ID,
     MinCount=1,
     MaxCount=1,
     InstanceType=INSTANCE_TYPE,
@@ -59,3 +63,30 @@ if health == utils.STATUS_OK:
 else:
     print('   Timeout waiting for health check')
     utils.terminate_instance_and_exit(instance)
+
+# Execute deploy script via SSH
+
+commands = [
+    'curl https://raw.githubusercontent.com/meilisearch/cloud-scripts/{0}/scripts/deploy-meilisearch.sh | sudo bash -s {0} {1}'.format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, "AWS"),
+]
+
+for cmd in commands:
+    ssh_command = 'ssh {user}@{host} -o StrictHostKeyChecking=no -i {ssh_key_path} "{cmd}"'.format(
+        user='admin',
+        host=instance.public_ip_address,
+        ssh_key_path=expanduser('~') + '/Downloads/MarketplaceKeyPair.pem',
+        cmd=cmd,
+    )
+    print("EXECUTE COMMAND:", ssh_command)
+    os.system(ssh_command)
+    time.sleep(5)
+
+# Create AMI Image
+
+print('Triggering AMI Image creation...')
+image = boto3.client('ec2').create_image(
+    InstanceId=instance.id,
+    Name="{}-{}".format(SNAPSHOT_NAME, datetime.now().strftime("(%d-%m-%Y-%H-%M-%S)")),
+    Description='Meilisearch {} running on {}.'.format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
+)
+print('   AMI creation triggered: {}'.format(image['ImageId']))
