@@ -64,7 +64,7 @@ else:
     print('   Timeout waiting for health check')
     utils.terminate_instance_and_exit(instance)
 
-# Execute deploy script via SSH
+### Execute deploy script via SSH
 
 commands = [
     'curl https://raw.githubusercontent.com/meilisearch/cloud-scripts/{0}/scripts/deploy-meilisearch.sh | sudo bash -s {0} {1}'.format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, "AWS"),
@@ -81,7 +81,7 @@ for cmd in commands:
     os.system(ssh_command)
     time.sleep(5)
 
-# Create AMI Image
+### Create AMI Image
 
 print('Triggering AMI Image creation...')
 image = boto3.client('ec2').create_image(
@@ -90,3 +90,28 @@ image = boto3.client('ec2').create_image(
     Description='Meilisearch {} running on {}.'.format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
 )
 print('   AMI creation triggered: {}'.format(image['ImageId']))
+
+### Wait for AMI creation
+
+print("Waiting for AMI creation...")
+state_code, ami = utils.wait_for_ami_available(image)
+if state_code == utils.STATUS_OK:
+    print('   AMI created: {}'.format(image['ImageId']))
+else:
+    print('   Error: {}. State: {}.'.format(state_code, ami.state))
+    utils.terminate_instance_and_exit(instance)
+
+### Make AMI public
+
+print("Waiting for AMI to be Public...")
+state_code, public = utils.make_ami_public(image)
+if state_code == utils.STATUS_OK:
+    print('   AMI published: {}'.format(public))
+else:
+    print('   Error: {}. Public: {}.'.format(state_code, public))
+    utils.terminate_instance_and_exit(instance)
+
+### Terminate EC2 Instance
+
+print("Terminating instance...")
+utils.terminate_instance_and_exit(instance)
