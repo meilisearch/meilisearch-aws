@@ -51,8 +51,24 @@ def wait_for_ami_available(image, timeout_seconds=None):
         ami  = ec2.Image(image['ImageId'])
         if ami.state != 'pending':
             if ami.state == 'available':
-                return STATUS_OK, ami.state
-            return STATUS_ERROR, ami.state
+                return STATUS_OK, ami
+            return STATUS_ERROR, ami
+        time.sleep(1)
+    return STATUS_TIMEOUT, None
+
+def make_ami_public(image, timeout_seconds=None):
+    ec2 = boto3.resource('ec2')
+    start_time = datetime.datetime.now()
+    while timeout_seconds is None \
+        or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
+        ami  = ec2.Image(image['ImageId'])
+        ami.modify_attribute(
+            LaunchPermission={
+                'Add': [{'Group': 'all'}]
+            }
+        )
+        if ami.public:
+            return STATUS_OK, ami.public
         time.sleep(1)
     return STATUS_TIMEOUT, None
 

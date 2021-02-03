@@ -41,7 +41,7 @@ instances = ec2.create_instances(
 print('   Instance created. ID: {}'.format(instances[0].id))
 
 
-## Wait for EC2 instance to be 'running'
+### Wait for EC2 instance to be 'running'
 
 print('Waiting for AWS EC2 instance state to be "running"')
 instance = ec2.Instance(instances[0].id)
@@ -85,8 +85,7 @@ for cmd in commands:
 
 print('Triggering AMI Image creation...')
 image = boto3.client('ec2').create_image(
-    # InstanceId=instance.id,
-    InstanceId='i-0d63f7441fde08a21',
+    InstanceId=instance.id,
     Name="{}-{}".format(SNAPSHOT_NAME, datetime.now().strftime("(%d-%m-%Y-%H-%M-%S)")),
     Description='Meilisearch {} running on {}.'.format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
 )
@@ -95,10 +94,24 @@ print('   AMI creation triggered: {}'.format(image['ImageId']))
 ### Wait for AMI creation
 
 print("Waiting for AMI creation...")
-state_code, state = utils.wait_for_ami_available(image)
+state_code, ami = utils.wait_for_ami_available(image)
 if state_code == utils.STATUS_OK:
     print('   AMI created: {}'.format(image['ImageId']))
 else:
-    print('   Error: {}. State: {}.'.format(state_code, state))
+    print('   Error: {}. State: {}.'.format(state_code, ami.state))
     utils.terminate_instance_and_exit(instance)
 
+### Make AMI public
+
+print("Waiting for AMI to be Public...")
+state_code, public = utils.make_ami_public(image)
+if state_code == utils.STATUS_OK:
+    print('   AMI published: {}'.format(public))
+else:
+    print('   Error: {}. Public: {}.'.format(state_code, public))
+    utils.terminate_instance_and_exit(instance)
+
+### Terminate EC2 Instance
+
+print("Terminating instance...")
+utils.terminate_instance_and_exit(instance)
