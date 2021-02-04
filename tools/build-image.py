@@ -156,7 +156,7 @@ for aws_region in AWS_REGIONS:
         AWS_REGION_AMIS[aws_region] = response['ImageId']
         print('   AMI copy triggered: {} - {}'.format(aws_region, response['ImageId']))
     else:
-        print('   Error: AMI couldn\t be created for: {}.'.format(aws_region))
+        print('   Error: AMI could not be created for: {}.'.format(aws_region))
         print('   {}'.format(response['ResponseMetadata']['HTTPStatusCode']))
 
 ### Wait for propagated AMIs creation
