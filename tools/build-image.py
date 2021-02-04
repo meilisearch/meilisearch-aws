@@ -11,17 +11,23 @@ import utils
 
 MEILI_CLOUD_SCRIPTS_VERSION_TAG='v0.18.1'
 BASE_OS_NAME='Debian-10.3'
-SNAPSHOT_NAME="MeiliSearch-{}-{}".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
-IMAGE_DESCRIPTION_NAME="MeiliSearch-{} running on {}".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
-SSH_KEY='MarketplaceKeyPair-NVirginia'
-INSTANCE_TYPE='t2.small'
-SECURITY_GROUP='MarketplaceSecurityGroup'
 DEBIAN_BASE_IMAGE_ID='ami-003f19e0e687de1cd'
 
 USER_DATA =requests.get(
     'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/cloud-config.yaml'
     .format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 ).text
+
+SNAPSHOT_NAME="MeiliSearch-{}-{}".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
+AMI_BUILD_NAME="{}-BUILD-{}".format(SNAPSHOT_NAME, datetime.now().strftime("(%d-%m-%Y-%H-%M-%S)"))
+IMAGE_DESCRIPTION_NAME="MeiliSearch-{} running on {}".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
+
+INSTANCE_TYPE='t2.small'
+SECURITY_GROUP='MarketplaceSecurityGroup'
+
+SSH_KEY='MarketplaceKeyPair-NVirginia'
+SSH_KEY_PEM_FILE=expanduser('~') + '/.aws/KeyPairs/MarketplaceKeyPair-NVirginia.pem'
+SSH_USER='admin'
 
 AWS_DEFAULT_REGION='us-east-1'
 AWS_REGIONS = [
@@ -100,9 +106,9 @@ commands = [
 
 for cmd in commands:
     ssh_command = 'ssh {user}@{host} -o StrictHostKeyChecking=no -i {ssh_key_path} "{cmd}"'.format(
-        user='admin',
+        user=SSH_USER,
         host=instance.public_ip_address,
-        ssh_key_path=expanduser('~') + '/Downloads/MarketplaceKeyPair-NVirginia.pem',
+        ssh_key_path=SSH_KEY_PEM_FILE,
         cmd=cmd,
     )
     print("EXECUTE COMMAND:", ssh_command)
@@ -114,7 +120,7 @@ for cmd in commands:
 print('Triggering AMI Image creation...')
 image = boto3.client('ec2', AWS_DEFAULT_REGION).create_image(
     InstanceId=instance.id,
-    Name="{}-BUILD-{}".format(SNAPSHOT_NAME, datetime.now().strftime("(%d-%m-%Y-%H-%M-%S)")),
+    Name=AMI_BUILD_NAME,
     Description='Meilisearch {} running on {}.'.format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
 )
 print('   AMI creation triggered: {}'.format(image['ImageId']))
