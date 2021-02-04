@@ -11,18 +11,52 @@ import utils
 
 MEILI_CLOUD_SCRIPTS_VERSION_TAG='v0.18.1'
 BASE_OS_NAME='Debian-10.3'
-SNAPSHOT_NAME="MeiliSearch-{}-{}".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
-SSH_KEY='MarketplaceKeyPair'
-INSTANCE_TYPE='t2.small'
-SECURITY_GROUP='MarketplaceSecurityGroup'
-DEBIAN_BASE_IMAGE_ID='ami-00000f9d1b75a36f8'
+DEBIAN_BASE_IMAGE_ID='ami-003f19e0e687de1cd'
 
 USER_DATA =requests.get(
     'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/cloud-config.yaml'
     .format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 ).text
 
-ec2 = boto3.resource('ec2')
+SNAPSHOT_NAME="MeiliSearch-{}-{}".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
+AMI_BUILD_NAME="{}-BUILD-{}".format(SNAPSHOT_NAME, datetime.now().strftime("(%d-%m-%Y-%H-%M-%S)"))
+IMAGE_DESCRIPTION_NAME="MeiliSearch-{} running on {}".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
+
+INSTANCE_TYPE='t2.small'
+SECURITY_GROUP='MarketplaceSecurityGroup'
+
+SSH_KEY='MarketplaceKeyPair-NVirginia'
+SSH_KEY_PEM_FILE=expanduser('~') + '/.aws/KeyPairs/MarketplaceKeyPair-NVirginia.pem'
+SSH_USER='admin'
+
+AWS_DEFAULT_REGION='us-east-1'
+AWS_REGIONS = [
+    'us-east-1',
+    'us-east-2',
+    'us-west-1',
+    'us-west-2',
+    'af-south-1',
+    'ap-east-1',
+    'ap-south-1',
+    'ap-northeast-2',
+    'ap-southeast-1',
+    'ap-southeast-2',
+    'ap-northeast-1',
+    'ca-central-1',
+    'eu-central-1',
+    'eu-west-1',
+    'eu-west-2',
+    'eu-south-1',
+    'eu-west-3',
+    'eu-north-1',
+    'me-south-1',
+    'sa-east-1',
+]
+
+AWS_REGION_AMIS = {}
+UNSUCCESSFUL_AWS_REGION_AMIS = {}
+
+ec2 = boto3.resource('ec2', AWS_DEFAULT_REGION)
 
 ### Create EC2 instance to setup MeiliSearch
 
@@ -45,7 +79,7 @@ print('   Instance created. ID: {}'.format(instances[0].id))
 
 print('Waiting for AWS EC2 instance state to be "running"')
 instance = ec2.Instance(instances[0].id)
-state_code, state = utils.wait_for_instance_running(instance, timeout_seconds=600)
+state_code, state = utils.wait_for_instance_running(instance, AWS_DEFAULT_REGION, timeout_seconds=600)
 print('   Instance state: {}'.format(instance.state['Name']))
 if state_code == utils.STATUS_OK:
     print('   Instance IP: {}'.format(instance.public_ip_address))
@@ -72,9 +106,9 @@ commands = [
 
 for cmd in commands:
     ssh_command = 'ssh {user}@{host} -o StrictHostKeyChecking=no -i {ssh_key_path} "{cmd}"'.format(
-        user='admin',
+        user=SSH_USER,
         host=instance.public_ip_address,
-        ssh_key_path=expanduser('~') + '/Downloads/MarketplaceKeyPair.pem',
+        ssh_key_path=SSH_KEY_PEM_FILE,
         cmd=cmd,
     )
     print("EXECUTE COMMAND:", ssh_command)
@@ -84,9 +118,9 @@ for cmd in commands:
 ### Create AMI Image
 
 print('Triggering AMI Image creation...')
-image = boto3.client('ec2').create_image(
+image = boto3.client('ec2', AWS_DEFAULT_REGION).create_image(
     InstanceId=instance.id,
-    Name="{}-{}".format(SNAPSHOT_NAME, datetime.now().strftime("(%d-%m-%Y-%H-%M-%S)")),
+    Name=AMI_BUILD_NAME,
     Description='Meilisearch {} running on {}.'.format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
 )
 print('   AMI creation triggered: {}'.format(image['ImageId']))
@@ -94,24 +128,63 @@ print('   AMI creation triggered: {}'.format(image['ImageId']))
 ### Wait for AMI creation
 
 print("Waiting for AMI creation...")
-state_code, ami = utils.wait_for_ami_available(image)
+state_code, ami = utils.wait_for_ami_available(image['ImageId'], AWS_DEFAULT_REGION)
 if state_code == utils.STATUS_OK:
     print('   AMI created: {}'.format(image['ImageId']))
 else:
     print('   Error: {}. State: {}.'.format(state_code, ami.state))
     utils.terminate_instance_and_exit(instance)
 
-### Make AMI public
-
-print("Waiting for AMI to be Public...")
-state_code, public = utils.make_ami_public(image)
-if state_code == utils.STATUS_OK:
-    print('   AMI published: {}'.format(public))
-else:
-    print('   Error: {}. Public: {}.'.format(state_code, public))
-    utils.terminate_instance_and_exit(instance)
-
 ### Terminate EC2 Instance
 
 print("Terminating instance...")
-utils.terminate_instance_and_exit(instance)
+instance.terminate()
+
+### Copy AMI to different AWS regions
+
+print("Triggering AMI propagation worldwide...")
+for aws_region in AWS_REGIONS:
+    client = boto3.client('ec2', aws_region)
+    response = client.copy_image(
+        Name=SNAPSHOT_NAME,
+        Description=IMAGE_DESCRIPTION_NAME,
+        Encrypted=False,
+        SourceImageId=image['ImageId'],
+        SourceRegion=AWS_DEFAULT_REGION
+    )
+    if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+        AWS_REGION_AMIS[aws_region] = response['ImageId']
+        print('   AMI copy triggered: {} - {}'.format(aws_region, response['ImageId']))
+    else:
+        print('   Error: AMI could not be created for: {}.'.format(aws_region))
+        print('   {}'.format(response['ResponseMetadata']['HTTPStatusCode']))
+
+### Wait for propagated AMIs creation
+
+print("Waiting for each AWS region AMI creation...")
+for region, propagated_ami in AWS_REGION_AMIS.items():
+    state_code, ami = utils.wait_for_ami_available(propagated_ami, region)
+    if state_code == utils.STATUS_OK:
+        print('   AMI created: {} - {}'.format(region, propagated_ami))
+    else:
+        print('   Error: {} - {}.'.format(region, propagated_ami))
+        del AWS_REGION_AMIS[region]
+        UNSUCCESSFUL_AWS_REGION_AMIS[region] = propagated_ami
+
+### Make propagatedd AMIs public
+print("Making each AMI Public...")
+for region, propagated_ami in AWS_REGION_AMIS.items():
+    state_code, public = utils.make_ami_public(propagated_ami, region)
+    if state_code == utils.STATUS_OK:
+        print('   AMI published: {} - {}'.format(region, propagated_ami))
+    else:
+        print('   Error: {} - {}.'.format(region, propagated_ami))
+        del AWS_REGION_AMIS[region]
+        UNSUCCESSFUL_AWS_REGION_AMIS[region] = propagated_ami
+
+print('Successfully created {} AMIs:'.format(len(AWS_REGION_AMIS)))
+for region, propagated_ami in AWS_REGION_AMIS.items():
+    print('   {}'.format(region))
+print('Error creating {} AMIs:'.format(len(UNSUCCESSFUL_AWS_REGION_AMIS)))
+for region, propagated_ami in UNSUCCESSFUL_AWS_REGION_AMIS.items():
+    print('   {}'.format(region))
