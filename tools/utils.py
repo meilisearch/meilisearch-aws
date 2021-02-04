@@ -9,8 +9,8 @@ STATUS_ERROR=2
 
 ### INSTANCE
 
-def wait_for_instance_running(instance, timeout_seconds=None):
-    ec2 = boto3.resource('ec2')
+def wait_for_instance_running(instance, region, timeout_seconds=None):
+    ec2 = boto3.resource('ec2', region)
     start_time = datetime.datetime.now()
     while timeout_seconds is None \
         or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
@@ -38,17 +38,17 @@ def wait_for_health_check(instance, timeout_seconds=None):
 def terminate_instance_and_exit(instance):
     print('   Terminating instance {}'.format(instance.id))
     instance.terminate()
-    print('EXITING PROGRAM WITH STATUS CODE 1')
+    print('ENDING PROCESS WITH EXIT CODE 1')
     exit(1)
 
 ### AMI
 
-def wait_for_ami_available(image, timeout_seconds=None):
-    ec2 = boto3.resource('ec2')
+def wait_for_ami_available(image_id, region, timeout_seconds=None):
+    ec2 = boto3.resource('ec2', region)
     start_time = datetime.datetime.now()
     while timeout_seconds is None \
         or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
-        ami  = ec2.Image(image['ImageId'])
+        ami  = ec2.Image(image_id)
         if ami.state != 'pending':
             if ami.state == 'available':
                 return STATUS_OK, ami
@@ -56,12 +56,12 @@ def wait_for_ami_available(image, timeout_seconds=None):
         time.sleep(1)
     return STATUS_TIMEOUT, None
 
-def make_ami_public(image, timeout_seconds=None):
-    ec2 = boto3.resource('ec2')
+def make_ami_public(image_id, region, timeout_seconds=None):
+    ec2 = boto3.resource('ec2', region)
     start_time = datetime.datetime.now()
     while timeout_seconds is None \
         or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
-        ami  = ec2.Image(image['ImageId'])
+        ami  = ec2.Image(image_id)
         ami.modify_attribute(
             LaunchPermission={
                 'Add': [{'Group': 'all'}]
