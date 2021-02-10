@@ -9,7 +9,7 @@ import utils
 
 ### Setup environment and settings
 
-MEILI_CLOUD_SCRIPTS_VERSION_TAG='v0.18.1'
+MEILI_CLOUD_SCRIPTS_VERSION_TAG='v0.19.0'
 BASE_OS_NAME='Debian-10.3'
 DEBIAN_BASE_IMAGE_ID='ami-003f19e0e687de1cd'
 
