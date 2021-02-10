@@ -101,7 +101,7 @@ The AMI name will be MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX).
 3. Test the image: create a new EC2 instance based on the new AMI `MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`, and make sure everything is running smoothly. Remember to set your `Security Group`, or allow inbound traffic to ports `22`, `80` and `443`. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
 🗑 Don't forget to destroy the Droplet after the test.
 
-### Publish the AWS and release
+### Publish the AWS AMI and release
 
 ⚠️ The AWS AMI should never be published with a `RC` version of MeiliSearch.
 
@@ -129,6 +129,23 @@ $ git push origin vX.X.X
 ```
 
 ⚠️ If changes where made to the repository between your testing branch was created and the moment it was merged, you should consider building the image and testing it again. Some important changes may have been introduced, unexpectedly changing the behavior of the image that will be published to the Marketplace.
+
+### Update the AWS AMI between two MeiliSearch Releases
+
+It can happen that you need to release a new AWS AMI but you cannot wait for the new MeiliSearch release.<br>
+For example, the `v0.17.0` is already pushed but you find out you need to fix the installation script: you can't wait for the `v0.18.0` release and need to re-publish the `v0.17.0` AWS AMI.
+
+In this case:
+
+- Apply your changes and reproduce the testing process (see [Test before Releasing](#test-before-releasing)).
+- Delete the current tag remotely and locally:
+
+```bash
+$ git push --delete origin vX.X.X
+$ git tag -d vX.X.X
+```
+
+- Publish the AMI again (see [Publish the DO Image](#publish-the-aws-ami-and-release))
 
 <hr>
 
