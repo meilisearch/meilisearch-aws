@@ -71,11 +71,11 @@ After cloning this repository, install python dependencies with the following co
 $ pip3 install -r requirements.txt
 ```
 
-Before running any script, make sure to [set your AWS credentials](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html) locally. Make sure that your default region on this configuration is `us-east-1` to guarantee the availability of the Debian base AMI specified as the `DEBIAN_BASE_IMAGE_ID` variable in the [`tools/build-image.py`](tools/build-image.py) script. If you want to use another region as default, you will need to find the corresponding Debian AMI ID and update it in the script.
+Before running any script, make sure to [set your AWS credentials](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html) locally. Make sure that your default region on this configuration is `us-east-1` to guarantee the availability of the Debian base AMI specified as the `DEBIAN_BASE_IMAGE_ID` variable at [`tools/config.py`](tools/config.py). If you want to use another region as default, you will need to find the corresponding Debian AMI ID and update it in the script.
 
-- Create a `Security Group` on your AWS account, opening inbound traffic to port SSH (22), HTTP (80) and HTTPS (443) for any origin (or your own IP address if you prefer). Use your `Security Group` name as a value for the `SECURITY_GROUP` variable in the [`tools/build-image.py`](tools/build-image.py) script.
+- Create a `Security Group` on your AWS account, opening inbound traffic to port SSH (22), HTTP (80) and HTTPS (443) for any origin (or your own IP address if you prefer). Use your `Security Group` name as a value for the `SECURITY_GROUP` variable in the [`tools/config.py`](tools/config.py) script.
 
-- Create an AWS `Key Pair`. Use your `Key Pair` name as a value for the `SSH_KEY` variable in the [`tools/build-image.py`](tools/build-image.py) script. 
+- Create an AWS `Key Pair`. Use your `Key Pair` name as a value for the `SSH_KEY` variable in the [`tools/config.py`](tools/config.py) script. 
 
 - Remember to modify the permissions on your PEM file with:
 
@@ -83,11 +83,11 @@ Before running any script, make sure to [set your AWS credentials](https://boto3
 $ chmod 400 YourKeyPairPemFile.pem
 ```
 
-- Update the path to your PEM file as a value of the `SSH_KEY_PEM_FILE` variable in the [`tools/build-image.py`](tools/build-image.py) script. 
+- Update the path to your PEM file as a value of the `SSH_KEY_PEM_FILE` variable in the [`tools/config.py`](tools/config.py) script. 
 
 ### Test before Releasing
 
-1. In [`tools/build-image.py`](tools/build-image.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
+1. In [`tools/config.py`](tools/config.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
 
 2. Run the [`tools/build-image.py`](tools/build-image.py) script to build the AWS AMI:
 
@@ -95,15 +95,40 @@ $ chmod 400 YourKeyPairPemFile.pem
 $ python3 tools/build-image.py
 ```
 
-This command will create an AWS EC2 Instance on MeiliSearch's account and configure it in order to prepare the MeiliSearch AMI. It will then create an AMI, which should be ready to be published to the Marketplace. The Instance will automatically be terminated after the AMI creation.<br>
+This command will create an AWS EC2 Instance on MeiliSearch's account and configure it in order to prepare the MeiliSearch AMI. It will then create an AMI, which should be private, but ready to be published in the following steps. The Instance will automatically be terminated after the AMI creation.<br>
 The AMI name will be MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX).
 
-3. Test the image: create a new EC2 instance based on the new AMI `MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`, and make sure everything is running smoothly. Remember to use the set your security group, or allow inbound traffic to ports 22, 80 and 443. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
+3. Test the image: create a new EC2 instance based on the new AMI `MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`, and make sure everything is running smoothly. Remember to set your `Security Group`, or allow inbound traffic to ports `22`, `80` and `443`. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
 🗑 Don't forget to destroy the Droplet after the test.
 
-### Publish the AWS
+### Publish the AWS and release
 
-⚠️ WIP
+⚠️ The AWS AMI should never be published with a `RC` version of MeiliSearch.
+
+Once the tests in the previous section have been done:
+
+1. Set the AMI ID that you TESTED and you want to publish and propagate over AWS regions. You should set the ID of the IMAGE that you built in the previous step as the value of the `PUBLISH_IMAGE_ID` in [`tools/config.py`](tools/config.py).
+
+2. Run the [`tools/publish-image.py`](tools/publish-image.py) script to propagate and publish the AWS AMI in every AWS region:
+
+```bash
+$ python3 tools/publish-image.py
+```
+
+3. Commit your changes on a new branch.
+
+4. Open a PR from the branch where changes where done and merge it.
+
+5. Create a git tag on the last `master` commit:
+
+```bash
+$ git checkout master
+$ git pull origin master
+$ git tag vX.X.X
+$ git push origin vX.X.X
+```
+
+⚠️ If changes where made to the repository between your testing branch was created and the moment it was merged, you should consider building the image and testing it again. Some important changes may have been introduced, unexpectedly changing the behavior of the image that will be published to the Marketplace.
 
 <hr>
 
