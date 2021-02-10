@@ -71,7 +71,8 @@ After cloning this repository, install python dependencies with the following co
 $ pip3 install -r requirements.txt
 ```
 
-Before running any script, make sure to [set your AWS credentials](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html) locally. Make sure that your default region on this configuration is `us-east-1` to guarantee the availability of the Debian base AMI specified as the `DEBIAN_BASE_IMAGE_ID` variable at [`tools/config.py`](tools/config.py). If you want to use another region as default, you will need to find the corresponding Debian AMI ID and update it in the script.
+Before running any script, make sure to [set your AWS credentials](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html) locally. Make sure that your default region on this configuration is `us-east-1` to guarantee the availability of the Debian base AMI specified as the `DEBIAN_BASE_IMAGE_ID` variable at [`tools/config.py`](tools/config.py).<br>
+If you want to use another region as default, you will need to find the corresponding Debian AMI ID and update it in the script.
 
 - Create a `Security Group` on your AWS account, opening inbound traffic to port SSH (22), HTTP (80) and HTTPS (443) for any origin (or your own IP address if you prefer). Use your `Security Group` name as a value for the `SECURITY_GROUP` variable in the [`tools/config.py`](tools/config.py) script.
 
@@ -95,13 +96,13 @@ $ chmod 400 YourKeyPairPemFile.pem
 $ python3 tools/build-image.py
 ```
 
-This command will create an AWS EC2 Instance on MeiliSearch's account and configure it in order to prepare the MeiliSearch AMI. It will then create an AMI, which should be private, but ready to be published in the following steps. The Instance will automatically be terminated after the AMI creation.<br>
-The AMI name will be MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX).
+This command will create an AWS EC2 Instance on MeiliSearch's account and configure it in order to prepare the MeiliSearch AMI. It will then create an AMI, which should be private, but ready to be published in the following steps. The instance will automatically be terminated after the AMI creation.<br>
+The AMI name will be `MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`.
 
 3. Test the image: create a new EC2 instance based on the new AMI `MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`, and make sure everything is running smoothly. Remember to set your `Security Group`, or allow inbound traffic to ports `22`, `80` and `443`. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
 🗑 Don't forget to destroy the Droplet after the test.
 
-### Publish the AWS AMI and release
+### Publish the AWS AMI and Release
 
 ⚠️ The AWS AMI should never be published with a `RC` version of MeiliSearch.
 
