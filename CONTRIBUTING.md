@@ -1,15 +1,11 @@
-# Contributing
+# Contributing <!-- omit in TOC -->
 
 First of all, thank you for contributing to MeiliSearch! The goal of this document is to provide everything you need to know in order to contribute to MeiliSearch and its different integrations.
-
-<!-- MarkdownTOC autolink="true" style="ordered" indent="   " -->
 
 - [Assumptions](#assumptions)
 - [How to Contribute](#how-to-contribute)
 - [Git Guidelines](#git-guidelines)
 - [Release Process (for internal team only)](#release-process-for-internal-team-only)
-
-<!-- /MarkdownTOC -->
 
 ## Assumptions
 
@@ -23,17 +19,17 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 2. Once done, [fork the meilisearch-aws repository](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) in your own GitHub account. Ask a maintainer if you want your issue to be checked before making a PR.
 3. [Create a new Git branch](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-and-deleting-branches-within-your-repository).
 4. Make the changes on your branch.
-5. [Submit the branch as a PR](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) pointing to the `master` branch of the main meilisearch-aws repository. A maintainer should comment and/or review your Pull Request within a few days. Although depending on the circumstances, it may take longer.<br>
+5. [Submit the branch as a PR](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request-from-a-fork) pointing to the `main` branch of the main meilisearch-aws repository. A maintainer should comment and/or review your Pull Request within a few days. Although depending on the circumstances, it may take longer.<br>
  We do not enforce a naming convention for the PRs, but **please use something descriptive of your changes**, having in mind that the title of your PR will be automatically added to the next [release changelog](https://github.com/meilisearch/meilisearch-aws/releases/).
 
 ## Git Guidelines
 
-### Git Branches
+### Git Branches <!-- omit in TOC -->
 
 All changes must be made in a branch and submitted as PR.
 We do not enforce any branch naming style, but please use something descriptive of your changes.
 
-### Git Commits
+### Git Commits <!-- omit in TOC -->
 
 As minimal requirements, your commit message should:
 - be capitalized
@@ -43,13 +39,13 @@ As minimal requirements, your commit message should:
 
 We don't follow any other convention, but if you want to use one, we recommend [this one](https://chris.beams.io/posts/git-commit/).
 
-### GitHub Pull Requests
+### GitHub Pull Requests <!-- omit in TOC -->
 
 Some notes on GitHub PRs:
 
 - [Convert your PR as a draft](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/changing-the-stage-of-a-pull-request) if your changes are a work in progress: no one will review it until you pass your PR as ready for review.<br>
   The draft PR can be very useful if you want to show that you are working on something and make your work visible.
-- The branch related to the PR must be **up-to-date with `master`** before merging. If it's not, you have to rebase your branch. Check out this [quick tutorial](https://gist.github.com/curquiza/5f7ce615f85331f083cd467fc4e19398) to successfully apply the rebase from a forked repository.
+- The branch related to the PR must be **up-to-date with `main`** before merging. If it's not, you have to rebase your branch. Check out this [quick tutorial](https://gist.github.com/curquiza/5f7ce615f85331f083cd467fc4e19398) to successfully apply the rebase from a forked repository.
 - All PRs must be reviewed and approved by at least one maintainer.
 - The PR title should be accurate and descriptive of the changes.
 
@@ -63,7 +59,7 @@ It means that, for example, the `v0.17.0` tag in this repository corresponds to 
 This repository currently does not provide any automated way to test and release the AWS AMI.<br>
 **Please, follow carefully the steps in the next sections before any release.**
 
-### Set your environment
+### Set your environment <!-- omit in TOC -->
 
 After cloning this repository, install python dependencies with the following command:
 
@@ -76,7 +72,7 @@ If you want to use another region as default, you will need to find the correspo
 
 - Create a `Security Group` on your AWS account, opening inbound traffic to port SSH (22), HTTP (80) and HTTPS (443) for any origin (or your own IP address if you prefer). Use your `Security Group` name as a value for the `SECURITY_GROUP` variable in the [`tools/config.py`](tools/config.py) script.
 
-- Create an AWS `Key Pair`. Use your `Key Pair` name as a value for the `SSH_KEY` variable in the [`tools/config.py`](tools/config.py) script. 
+- Create an AWS `Key Pair`. Use your `Key Pair` name as a value for the `SSH_KEY` variable in the [`tools/config.py`](tools/config.py) script.
 
 - Remember to modify the permissions on your PEM file with:
 
@@ -84,9 +80,9 @@ If you want to use another region as default, you will need to find the correspo
 $ chmod 400 YourKeyPairPemFile.pem
 ```
 
-- Update the path to your PEM file as a value of the `SSH_KEY_PEM_FILE` variable in the [`tools/config.py`](tools/config.py) script. 
+- Update the path to your PEM file as a value of the `SSH_KEY_PEM_FILE` variable in the [`tools/config.py`](tools/config.py) script.
 
-### Test before Releasing
+### Test before Releasing <!-- omit in TOC -->
 
 1. In [`tools/config.py`](tools/config.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
 
@@ -102,7 +98,7 @@ The AMI name will be `MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`.
 3. Test the image: create a new EC2 instance based on the new AMI `MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`, and make sure everything is running smoothly. Remember to set your `Security Group`, or allow inbound traffic to ports `22`, `80` and `443`. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
 🗑 Don't forget to destroy the Droplet after the test.
 
-### Publish the AWS AMI and Release
+### Publish the AWS AMI and Release <!-- omit in TOC -->
 
 ⚠️ The AWS AMI should never be published with a `RC` version of MeiliSearch.
 
@@ -120,18 +116,18 @@ $ python3 tools/publish-image.py
 
 4. Open a PR from the branch where changes where done and merge it.
 
-5. Create a git tag on the last `master` commit:
+5. Create a git tag on the last `main` commit:
 
 ```bash
-$ git checkout master
-$ git pull origin master
+$ git checkout main
+$ git pull origin main
 $ git tag vX.X.X
 $ git push origin vX.X.X
 ```
 
 ⚠️ If changes where made to the repository between your testing branch was created and the moment it was merged, you should consider building the image and testing it again. Some important changes may have been introduced, unexpectedly changing the behavior of the image that will be published to the Marketplace.
 
-### Update the AWS AMI between two MeiliSearch Releases
+### Update the AWS AMI between two MeiliSearch Releases <!-- omit in TOC -->
 
 It can happen that you need to release a new AWS AMI but you cannot wait for the new MeiliSearch release.<br>
 For example, the `v0.17.0` is already pushed but you find out you need to fix the installation script: you can't wait for the `v0.18.0` release and need to re-publish the `v0.17.0` AWS AMI.
