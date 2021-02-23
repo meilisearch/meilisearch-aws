@@ -3,8 +3,6 @@ import boto3
 import config
 import utils
 
-IMAGE_ID='i-0f7dddcc199415e30'
-
 AWS_REGION_AMIS = {}
 UNSUCCESSFUL_AWS_REGION_AMIS = {}
 
