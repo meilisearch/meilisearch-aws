@@ -140,7 +140,6 @@ To proceed to delete older AMIs that should no longer be available, use the [`to
 ```bash
 $ python3 tools/unpublish-image.py
 ```
-3. Veify that every region has the latest version of MeiliSearch, and the previous one, that s
 
 ### Update the AWS AMI between two MeiliSearch Releases  <!-- omit in TOC -->
 
