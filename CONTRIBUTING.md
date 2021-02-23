@@ -129,7 +129,9 @@ $ git push origin vX.X.X
 
 ### Clean old AWS AMI images <!-- omit in TOC -->
 
-If you want to delete old images that shouldn't be publicly available anymore:
+Make sure that the last 2 versions of MeiliSearch AMI are available and public in every AWS region. Our goal is to always offer the latest MeiliSearch version to AWS users, but we are keeping the previous version in case there is a bug or a problem in the latest one. Any other older version of the AMI must be deleted.
+
+To proceed to delete older AMIs that should no longer be available, use the [`tools/unpublish-image.py`](tools/unpublish-image.py) script to delete every other AMI that is present in AWS:
 
 1. Define the image **name** as the value of the variable `DELETE_IMAGE_NAME` in the [`tools/config.py`](tools/config.py) script.
 
@@ -138,6 +140,7 @@ If you want to delete old images that shouldn't be publicly available anymore:
 ```bash
 $ python3 tools/unpublish-image.py
 ```
+3. Veify that every region has the latest version of MeiliSearch, and the previous one, that s
 
 ### Update the AWS AMI between two MeiliSearch Releases  <!-- omit in TOC -->
 
