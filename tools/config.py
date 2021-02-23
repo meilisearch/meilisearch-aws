@@ -10,6 +10,10 @@ MEILI_CLOUD_SCRIPTS_VERSION_TAG='v0.19.0'
 
 PUBLISH_IMAGE_ID='ami-0180fe1b86b10a9fc' 
 
+# Update with the AMI name that you want to unpublish/delete worldwide
+
+DELETE_IMAGE_ID='MeiliSearch-v0.19.0-Debian-10.3'
+
 # Update with your own Securityt Group and Key Pair name / file
 
 SECURITY_GROUP='MarketplaceSecurityGroup'
