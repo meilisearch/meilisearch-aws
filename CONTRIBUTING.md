@@ -127,11 +127,11 @@ $ git push origin vX.X.X
 
 ⚠️ If changes where made to the repository between your testing branch was created and the moment it was merged, you should consider building the image and testing it again. Some important changes may have been introduced, unexpectedly changing the behavior of the image that will be published to the Marketplace.
 
-### Clean OLD AWS AMI images
+### Clean old AWS AMI images
 
 If you want to delete old images that shouldn't be publicly available anymore:
 
-1. Define the image **name** as the value of the variable `DELETE_IMAGE_ID` in the [`tools/config.py`](tools/config.py) script.
+1. Define the image **name** as the value of the variable `DELETE_IMAGE_NAME` in the [`tools/config.py`](tools/config.py) script.
 
 2. Run the [`tools/unpublish-image.py`](tools/unpublish-image.py) script to delete the AWS AMIs worldwide:
 
