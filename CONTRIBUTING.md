@@ -127,7 +127,21 @@ $ git push origin vX.X.X
 
 ⚠️ If changes where made to the repository between your testing branch was created and the moment it was merged, you should consider building the image and testing it again. Some important changes may have been introduced, unexpectedly changing the behavior of the image that will be published to the Marketplace.
 
-### Update the AWS AMI between two MeiliSearch Releases <!-- omit in TOC -->
+### Clean old AWS AMI images <!-- omit in TOC -->
+
+Make sure that the last 2 versions of MeiliSearch AMI are available and public in every AWS region. Our goal is to always offer the latest MeiliSearch version to AWS users, but we are keeping the previous version in case there is a bug or a problem in the latest one. Any other older version of the AMI must be deleted.
+
+To proceed to delete older AMIs that should no longer be available, use the [`tools/unpublish-image.py`](tools/unpublish-image.py) script to delete every other AMI that is present in AWS:
+
+1. Define the image **name** as the value of the variable `DELETE_IMAGE_NAME` in the [`tools/config.py`](tools/config.py) script.
+
+2. Run the [`tools/unpublish-image.py`](tools/unpublish-image.py) script to delete the AWS AMIs worldwide:
+
+```bash
+$ python3 tools/unpublish-image.py
+```
+
+### Update the AWS AMI between two MeiliSearch Releases  <!-- omit in TOC -->
 
 It can happen that you need to release a new AWS AMI but you cannot wait for the new MeiliSearch release.<br>
 For example, the `v0.17.0` is already pushed but you find out you need to fix the installation script: you can't wait for the `v0.18.0` release and need to re-publish the `v0.17.0` AWS AMI.
