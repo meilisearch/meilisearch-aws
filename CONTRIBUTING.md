@@ -64,7 +64,7 @@ This repository currently does not provide any automated way to test and release
 After cloning this repository, install python dependencies with the following command:
 
 ```bash
-$ pip3 install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 Before running any script, make sure to [set your AWS credentials](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/configuration.html) locally. Make sure that your default region on this configuration is `us-east-1` to guarantee the availability of the Debian base AMI specified as the `DEBIAN_BASE_IMAGE_ID` variable at [`tools/config.py`](tools/config.py).<br>
@@ -77,7 +77,7 @@ If you want to use another region as default, you will need to find the correspo
 - Remember to modify the permissions on your PEM file with:
 
 ```bash
-$ chmod 400 YourKeyPairPemFile.pem
+chmod 400 YourKeyPairPemFile.pem
 ```
 
 - Update the path to your PEM file as a value of the `SSH_KEY_PEM_FILE` variable in the [`tools/config.py`](tools/config.py) script.
@@ -89,7 +89,7 @@ $ chmod 400 YourKeyPairPemFile.pem
 2. Run the [`tools/build-image.py`](tools/build-image.py) script to build the AWS AMI:
 
 ```bash
-$ python3 tools/build-image.py
+python3 tools/build-image.py
 ```
 
 This command will create an AWS EC2 Instance on MeiliSearch's account and configure it in order to prepare the MeiliSearch AMI. It will then create an AMI, which should be private, but ready to be published in the following steps. The instance will automatically be terminated after the AMI creation.<br>
@@ -109,7 +109,7 @@ Once the tests in the previous section have been done:
 2. Run the [`tools/publish-image.py`](tools/publish-image.py) script to propagate and publish the AWS AMI in every AWS region:
 
 ```bash
-$ python3 tools/publish-image.py
+python3 tools/publish-image.py
 ```
 
 3. Commit your changes on a new branch.
@@ -119,10 +119,10 @@ $ python3 tools/publish-image.py
 5. Create a git tag on the last `main` commit:
 
 ```bash
-$ git checkout main
-$ git pull origin main
-$ git tag vX.X.X
-$ git push origin vX.X.X
+git checkout main
+git pull origin main
+git tag vX.X.X
+git push origin vX.X.X
 ```
 
 ⚠️ If changes where made to the repository between your testing branch was created and the moment it was merged, you should consider building the image and testing it again. Some important changes may have been introduced, unexpectedly changing the behavior of the image that will be published to the Marketplace.
@@ -138,7 +138,7 @@ To proceed to delete older AMIs that should no longer be available, use the [`to
 2. Run the [`tools/unpublish-image.py`](tools/unpublish-image.py) script to delete the AWS AMIs worldwide:
 
 ```bash
-$ python3 tools/unpublish-image.py
+python3 tools/unpublish-image.py
 ```
 
 ### Update the AWS AMI between two MeiliSearch Releases  <!-- omit in TOC -->
@@ -152,8 +152,8 @@ In this case:
 - Delete the current tag remotely and locally:
 
 ```bash
-$ git push --delete origin vX.X.X
-$ git tag -d vX.X.X
+git push --delete origin vX.X.X
+git tag -d vX.X.X
 ```
 
 - Publish the AMI again (see [Publish the DO Image](#publish-the-aws-ami-and-release))
