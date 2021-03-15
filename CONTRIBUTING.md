@@ -156,7 +156,7 @@ git push --delete origin vX.X.X
 git tag -d vX.X.X
 ```
 
-- Publish the AMI again (see [Publish the DO Image](#publish-the-aws-ami-and-release))
+- Publish the AMI again (see [Publish the AWS AMI and Release](#publish-the-aws-ami-and-release))
 
 <hr>
 
