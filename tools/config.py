@@ -22,13 +22,14 @@ SSH_KEY_PEM_FILE=expanduser('~') + '/.aws/KeyPairs/MarketplaceKeyPair-NVirginia.
 
 ### Setup environment and settings
 
+PROVIDER_NAME='aws'
 BASE_OS_NAME='Debian-10.3'
 DEBIAN_BASE_IMAGE_ID='ami-003f19e0e687de1cd'
 
 USER_DATA =requests.get(
     'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/cloud-config.yaml'
     .format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)
-).text
+).text.replace("unknown_provider", PROVIDER_NAME)
 
 SNAPSHOT_NAME="MeiliSearch-{}-{}".format(MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
 AMI_BUILD_NAME="{}-BUILD-{}".format(SNAPSHOT_NAME, datetime.now().strftime("(%d-%m-%Y-%H-%M-%S)"))
