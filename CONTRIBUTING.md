@@ -104,10 +104,10 @@ chmod 400 YourKeyPairPemFile.pem
 
 1. In [`tools/config.py`](tools/config.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
 
-2. Run the [`tools/build-image.py`](tools/build-image.py) script to build the AWS AMI:
+2. Run the [`tools/build_image.py`](tools/build_image.py) script to build the AWS AMI:
 
 ```bash
-python3 tools/build-image.py
+python3 tools/build_image.py
 ```
 
 This command will create an AWS EC2 Instance on MeiliSearch's account and configure it in order to prepare the MeiliSearch AMI. It will then create an AMI, which should be private, but ready to be published in the following steps. The instance will automatically be terminated after the AMI creation.<br>
@@ -124,10 +124,10 @@ Once the tests in the previous section have been done:
 
 1. Set the AMI ID that you TESTED and you want to publish and propagate over AWS regions. You should set the ID of the IMAGE that you built in the previous step as the value of the `PUBLISH_IMAGE_ID` in [`tools/config.py`](tools/config.py).
 
-2. Run the [`tools/publish-image.py`](tools/publish-image.py) script to propagate and publish the AWS AMI in every AWS region:
+2. Run the [`tools/publish_image.py`](tools/publish_image.py) script to propagate and publish the AWS AMI in every AWS region:
 
 ```bash
-python3 tools/publish-image.py
+python3 tools/publish_image.py
 ```
 
 3. Commit your changes on a new branch.
@@ -149,14 +149,14 @@ git push origin vX.X.X
 
 Make sure that the last 2 versions of MeiliSearch AMI are available and public in every AWS region. Our goal is to always offer the latest MeiliSearch version to AWS users, but we are keeping the previous version in case there is a bug or a problem in the latest one. Any other older version of the AMI must be deleted.
 
-To proceed to delete older AMIs that should no longer be available, use the [`tools/unpublish-image.py`](tools/unpublish-image.py) script to delete every other AMI that is present in AWS:
+To proceed to delete older AMIs that should no longer be available, use the [`tools/unpublish_image.py`](tools/unpublish_image.py) script to delete every other AMI that is present in AWS:
 
 1. Define the image **name** as the value of the variable `DELETE_IMAGE_NAME` in the [`tools/config.py`](tools/config.py) script.
 
-2. Run the [`tools/unpublish-image.py`](tools/unpublish-image.py) script to delete the AWS AMIs worldwide:
+2. Run the [`tools/unpublish_image.py`](tools/unpublish_image.py) script to delete the AWS AMIs worldwide:
 
 ```bash
-python3 tools/unpublish-image.py
+python3 tools/unpublish_image.py
 ```
 
 ### Update the AWS AMI between two MeiliSearch Releases  <!-- omit in TOC -->
