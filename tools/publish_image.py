@@ -6,7 +6,7 @@ import utils
 AWS_REGION_AMIS = {}
 UNSUCCESSFUL_AWS_REGION_AMIS = {}
 
-### Copy AMI to different AWS regions
+# Copy AMI to different AWS regions
 
 print("Triggering AMI propagation worldwide...")
 for aws_region in config.AWS_REGIONS:
@@ -20,12 +20,13 @@ for aws_region in config.AWS_REGIONS:
     )
     if response['ResponseMetadata']['HTTPStatusCode'] == 200:
         AWS_REGION_AMIS[aws_region] = response['ImageId']
-        print('   AMI copy triggered: {} - {}'.format(aws_region, response['ImageId']))
+        print('   AMI copy triggered: {} - {}'.format(aws_region,
+              response['ImageId']))
     else:
         print('   Error: AMI could not be created for: {}.'.format(aws_region))
         print('   {}'.format(response['ResponseMetadata']['HTTPStatusCode']))
 
-### Wait for propagated AMIs creation
+# Wait for propagated AMIs creation
 
 print("Waiting for each AWS region AMI creation...")
 for region, propagated_ami in AWS_REGION_AMIS.items():
@@ -37,7 +38,7 @@ for region, propagated_ami in AWS_REGION_AMIS.items():
         del AWS_REGION_AMIS[region]
         config.UNSUCCESSFUL_AWS_REGION_AMIS[region] = propagated_ami
 
-### Make propagated AMIs public
+# Make propagated AMIs public
 print("Making each AMI Public...")
 for region, propagated_ami in AWS_REGION_AMIS.items():
     state_code, public = utils.make_ami_public(propagated_ami, region)
