@@ -36,7 +36,7 @@ for region, propagated_ami in AWS_REGION_AMIS.items():
     else:
         print('   Error: {} - {}.'.format(region, propagated_ami))
         del AWS_REGION_AMIS[region]
-        config.UNSUCCESSFUL_AWS_REGION_AMIS[region] = propagated_ami
+        UNSUCCESSFUL_AWS_REGION_AMIS[region] = propagated_ami
 
 # Make propagated AMIs public
 print("Making each AMI Public...")

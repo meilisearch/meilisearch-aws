@@ -1,6 +1,6 @@
 from os.path import expanduser
-import requests
 from datetime import datetime
+import requests
 
 # Update with the MeiliSearch version TAG you want to build the AMI with
 

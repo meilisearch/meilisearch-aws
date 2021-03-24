@@ -1,6 +1,7 @@
 import datetime
-import requests
+import sys
 import time
+import requests
 import boto3
 
 STATUS_OK = 0
@@ -33,7 +34,7 @@ def wait_for_health_check(instance, timeout_seconds=None):
                 'http://{}/health'.format(instance.public_ip_address))
             if resp.status_code >= 200 and resp.status_code < 300:
                 return STATUS_OK
-        except Exception as e:
+        except Exception:
             pass
         time.sleep(1)
     return STATUS_TIMEOUT
@@ -43,7 +44,7 @@ def terminate_instance_and_exit(instance):
     print('   Terminating instance {}'.format(instance.id))
     instance.terminate()
     print('ENDING PROCESS WITH EXIT CODE 1')
-    exit(1)
+    sys.exit(1)
 
 # AMI
 

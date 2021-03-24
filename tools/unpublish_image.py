@@ -1,7 +1,5 @@
 import boto3
-
 import config
-import utils
 
 AWS_REGION_AMIS = {}
 UNSUCCESSFUL_AWS_REGION_AMIS = {}
