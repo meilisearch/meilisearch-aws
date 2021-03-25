@@ -40,8 +40,8 @@ else:
 # Wait for Health check after configuration is finished
 
 print('Waiting for MeiliSearch health check (may take a few minutes: config and reboot)')
-health = utils.wait_for_health_check(instance, timeout_seconds=600)
-if health == utils.STATUS_OK:
+HEALTH = utils.wait_for_health_check(instance, timeout_seconds=600)
+if HEALTH == utils.STATUS_OK:
     print('   Instance is healthy')
 else:
     print('   Timeout waiting for health check')
@@ -55,14 +55,14 @@ commands = [
 ]
 
 for cmd in commands:
-    ssh_command = 'ssh {user}@{host} -o StrictHostKeyChecking=no -i {ssh_key_path} "{cmd}"'.format(
+    SSH_COMMAND = 'ssh {user}@{host} -o StrictHostKeyChecking=no -i {ssh_key_path} "{cmd}"'.format(
         user=config.SSH_USER,
         host=instance.public_ip_address,
         ssh_key_path=config.SSH_KEY_PEM_FILE,
         cmd=cmd,
     )
-    print('EXECUTE COMMAND:', ssh_command)
-    os.system(ssh_command)
+    print('EXECUTE COMMAND:', SSH_COMMAND)
+    os.system(SSH_COMMAND)
     time.sleep(5)
 
 # Create AMI Image
