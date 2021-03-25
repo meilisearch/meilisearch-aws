@@ -31,11 +31,11 @@ USER_DATA = requests.get(
     .format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 ).text
 
-SNAPSHOT_NAME = "MeiliSearch-{}-{}".format(
+SNAPSHOT_NAME = 'MeiliSearch-{}-{}'.format(
     MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
-AMI_BUILD_NAME = "{}-BUILD-{}".format(SNAPSHOT_NAME,
-                                      datetime.now().strftime("(%d-%m-%Y-%H-%M-%S)"))
-IMAGE_DESCRIPTION_NAME = "MeiliSearch-{} running on {}".format(
+AMI_BUILD_NAME = '{}-BUILD-{}'.format(SNAPSHOT_NAME,
+                                      datetime.now().strftime('(%d-%m-%Y-%H-%M-%S)'))
+IMAGE_DESCRIPTION_NAME = 'MeiliSearch-{} running on {}'.format(
     MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
 
 INSTANCE_TYPE = 't2.small'

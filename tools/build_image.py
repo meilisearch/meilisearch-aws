@@ -51,7 +51,7 @@ else:
 
 commands = [
     'curl https://raw.githubusercontent.com/meilisearch/cloud-scripts/{0}/scripts/deploy-meilisearch.sh | sudo bash -s {0} {1}'.format(
-        config.MEILI_CLOUD_SCRIPTS_VERSION_TAG, "AWS"),
+        config.MEILI_CLOUD_SCRIPTS_VERSION_TAG, 'AWS'),
 ]
 
 for cmd in commands:
@@ -61,7 +61,7 @@ for cmd in commands:
         ssh_key_path=config.SSH_KEY_PEM_FILE,
         cmd=cmd,
     )
-    print("EXECUTE COMMAND:", ssh_command)
+    print('EXECUTE COMMAND:', ssh_command)
     os.system(ssh_command)
     time.sleep(5)
 
@@ -80,7 +80,7 @@ print('   AMI creation triggered: {}'.format(image['ImageId']))
 
 # Wait for AMI creation
 
-print("Waiting for AMI creation...")
+print('Waiting for AMI creation...')
 state_code, ami = utils.wait_for_ami_available(
     image['ImageId'], config.AWS_DEFAULT_REGION)
 if state_code == utils.STATUS_OK:
@@ -91,5 +91,5 @@ else:
 
 # Terminate EC2 Instance
 
-print("Terminating instance...")
+print('Terminating instance...')
 instance.terminate()
