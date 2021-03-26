@@ -50,8 +50,8 @@ else:
 # Execute deploy script via SSH
 
 commands = [
-    'curl https://raw.githubusercontent.com/meilisearch/cloud-scripts/{0}/scripts/deploy-meilisearch.sh | sudo bash -s {0} {1}'.format(
-        config.MEILI_CLOUD_SCRIPTS_VERSION_TAG, 'AWS'),
+    'curl https://raw.githubusercontent.com/meilisearch/cloud-scripts/{0}/scripts/deploy-meilisearch.sh | sudo bash -s {0}'.format(
+        config.MEILI_CLOUD_SCRIPTS_VERSION_TAG),
 ]
 
 for cmd in commands:
