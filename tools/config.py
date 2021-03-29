@@ -22,7 +22,7 @@ SECURITY_GROUP = 'MarketplaceSecurityGroup'
 BASE_OS_NAME = 'Debian-10.3'
 DEBIAN_BASE_IMAGE_ID = 'ami-003f19e0e687de1cd'
 USER_DATA = requests.get(
-    'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/aws/cloud-config.yaml'
+    'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/providers/aws/cloud-config.yaml'
     .format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 ).text
 
