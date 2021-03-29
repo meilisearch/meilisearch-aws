@@ -1,5 +1,3 @@
-import time
-import os
 import boto3
 import utils
 import config
@@ -14,7 +12,6 @@ instances = ec2.create_instances(
     MinCount=1,
     MaxCount=1,
     InstanceType=config.INSTANCE_TYPE,
-    KeyName=config.SSH_KEY,
     SecurityGroups=[
         config.SECURITY_GROUP,
     ],
@@ -46,24 +43,6 @@ if HEALTH == utils.STATUS_OK:
 else:
     print('   Timeout waiting for health check')
     utils.terminate_instance_and_exit(instance)
-
-# Execute deploy script via SSH
-
-commands = [
-    'curl https://raw.githubusercontent.com/meilisearch/cloud-scripts/{0}/scripts/deploy-meilisearch.sh | sudo bash -s {0}'.format(
-        config.MEILI_CLOUD_SCRIPTS_VERSION_TAG),
-]
-
-for cmd in commands:
-    SSH_COMMAND = 'ssh {user}@{host} -o StrictHostKeyChecking=no -i {ssh_key_path} "{cmd}"'.format(
-        user=config.SSH_USER,
-        host=instance.public_ip_address,
-        ssh_key_path=config.SSH_KEY_PEM_FILE,
-        cmd=cmd,
-    )
-    print('EXECUTE COMMAND:', SSH_COMMAND)
-    os.system(SSH_COMMAND)
-    time.sleep(5)
 
 # Create AMI Image
 

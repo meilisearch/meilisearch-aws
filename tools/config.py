@@ -1,4 +1,3 @@
-from os.path import expanduser
 from datetime import datetime
 import requests
 
@@ -17,19 +16,15 @@ DELETE_IMAGE_NAME = 'MeiliSearch-v0.19.0-Debian-10.3'
 # Update with your own Securityt Group and Key Pair name / file
 
 SECURITY_GROUP = 'MarketplaceSecurityGroup'
-SSH_KEY = 'MarketplaceKeyPair-NVirginia'
-SSH_KEY_PEM_FILE = expanduser(
-    '~') + '/.aws/KeyPairs/MarketplaceKeyPair-NVirginia.pem'
 
 # Setup environment and settings
 
-PROVIDER_NAME='aws'
-BASE_OS_NAME='Debian-10.3'
-DEBIAN_BASE_IMAGE_ID='ami-003f19e0e687de1cd'
+BASE_OS_NAME = 'Debian-10.3'
+DEBIAN_BASE_IMAGE_ID = 'ami-003f19e0e687de1cd'
 USER_DATA = requests.get(
-    'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/cloud-config.yaml'
+    'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/providers/aws/cloud-config.yaml'
     .format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)
-).text.replace("unknown_provider", PROVIDER_NAME)
+).text
 
 SNAPSHOT_NAME = 'MeiliSearch-{}-{}'.format(
     MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
