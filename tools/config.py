@@ -1,4 +1,6 @@
+from os.path import expanduser
 from datetime import datetime
+import requests
 
 # Update with the MeiliSearch version TAG you want to build the AMI with
 
@@ -11,6 +13,10 @@ PUBLISH_IMAGE_ID = 'ami-0fbe1008176402eae'
 # Update with the AMI name that you want to unpublish/delete worldwide
 
 DELETE_IMAGE_NAME = 'MeiliSearch-v0.19.0-Debian-10.3'
+
+# Update with your own Securityt Group and Key Pair name / file
+
+SECURITY_GROUP = 'MarketplaceSecurityGroup'
 
 # Setup environment and settings
 

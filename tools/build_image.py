@@ -12,6 +12,9 @@ instances = ec2.create_instances(
     MinCount=1,
     MaxCount=1,
     InstanceType=config.INSTANCE_TYPE,
+    SecurityGroups=[
+        config.SECURITY_GROUP,
+    ],
     UserData=config.USER_DATA
 )
 print('   Instance created. ID: {}'.format(instances[0].id))
