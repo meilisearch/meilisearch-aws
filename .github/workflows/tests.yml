@@ -16,6 +16,9 @@ jobs:
     if: github.event_name != 'pull_request' || !startsWith(github.base_ref, 'bump-meilisearch-v')
     name: build-image-test
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+      AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_ACCESS_KEY_ID}}
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python 3.7
@@ -24,12 +27,6 @@ jobs:
         python-version: 3.7
     - name: Install dependencies
       run: pip3 install -r requirements.txt
-    - name: Configure AWS credentials from Test account
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
     - name: Set image name as env variable
       run: echo "IMAGE_NAME=meilisearch_aws_ci_test_$(date +'%d-%m-%Y-%H-%M-%S')" >> $GITHUB_ENV
     - name: Build image
