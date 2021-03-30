@@ -43,7 +43,7 @@ def wait_for_health_check(instance, timeout_seconds=None):
 def check_meilisearch_version(droplet, version):
     resp = requests.get(
         "http://{}/version".format(droplet.public_ip_address)).json()
-    if resp["pkgVersion"] == version:
+    if resp["pkgVersion"] in version:
         return
     raise Exception(
         "    The version of meilisearch ({}) does not match the droplet ({})".format(version, resp["pkgVersion"]))

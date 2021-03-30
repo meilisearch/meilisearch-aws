@@ -50,8 +50,9 @@ else:
 print('Waiting for Version check')
 try:
     utils.check_meilisearch_version(
-        instance, config.MEILI_CLOUD_SCRIPTS_VERSION_TAG[1:])
+        instance, config.MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 except Exception as err:
+    print("   Exception: {}".format(err))
     utils.terminate_instance_and_exit(instance)
 print('   Version of meilisearch match!')
 
