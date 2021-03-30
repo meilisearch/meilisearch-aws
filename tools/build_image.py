@@ -1,3 +1,4 @@
+import sys
 import boto3
 import utils
 import config
@@ -44,12 +45,27 @@ else:
     print('   Timeout waiting for health check')
     utils.terminate_instance_and_exit(instance)
 
+# Check version
+
+print('Waiting for Version check')
+try:
+    utils.check_meilisearch_version(
+        instance, config.MEILI_CLOUD_SCRIPTS_VERSION_TAG[1:])
+except Exception as err:
+    utils.terminate_instance_and_exit(instance)
+print('   Version of meilisearch match!')
+
 # Create AMI Image
+
+if len(sys.argv) > 1:
+    AMI_BUILD_NAME = sys.argv[1]
+else:
+    AMI_BUILD_NAME = config.AMI_BUILD_NAME
 
 print('Triggering AMI Image creation...')
 image = boto3.client('ec2', config.AWS_DEFAULT_REGION).create_image(
     InstanceId=instance.id,
-    Name=config.AMI_BUILD_NAME,
+    Name=AMI_BUILD_NAME,
     Description='Meilisearch {} running on {}.'.format(
         config.MEILI_CLOUD_SCRIPTS_VERSION_TAG,
         config.BASE_OS_NAME
@@ -72,3 +88,4 @@ else:
 
 print('Terminating instance...')
 instance.terminate()
+print('   Instance terminated')
