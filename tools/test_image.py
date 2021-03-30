@@ -5,18 +5,44 @@ import config
 
 ec2 = boto3.resource('ec2', config.AWS_DEFAULT_REGION)
 
-# Create EC2 instance to setup MeiliSearch
+if len(sys.argv) > 1:
+    SNAPSHOT_NAME = sys.argv[1]
+else:
+    raise Exception("No snapshot name specified")
 
-print('Creating AWS EC2 instance')
+print("Running test for image named: {name}...".format(
+    name=SNAPSHOT_NAME))
+
+# Get the image for the test
+
+MEILI_IMG = None
+images = boto3.client('ec2', config.AWS_DEFAULT_REGION).describe_images(
+    Owners=['self'])['Images']
+for img in images:
+    if img['Name'] == SNAPSHOT_NAME:
+        MEILI_IMG = boto3.resource(
+            'ec2', config.AWS_DEFAULT_REGION).Image(id=img['ImageId'])
+        print("Found image: {name} created at {creation_date}".format(
+            name=MEILI_IMG.name,
+            creation_date=MEILI_IMG.creation_date
+        ))
+        break
+
+if MEILI_IMG is None:
+    raise Exception("Couldn't find the specified image: {}".format(
+        SNAPSHOT_NAME))
+
+# Create EC2 instance from the retreived image
+
+print('Creating AWS EC2 instance from image')
 instances = ec2.create_instances(
-    ImageId=config.DEBIAN_BASE_IMAGE_ID,
+    ImageId=MEILI_IMG.id,
     MinCount=1,
     MaxCount=1,
     InstanceType=config.INSTANCE_TYPE,
     SecurityGroups=[
         config.SECURITY_GROUP,
-    ],
-    UserData=config.USER_DATA
+    ]
 )
 print('   Instance created. ID: {}'.format(instances[0].id))
 
@@ -35,7 +61,7 @@ else:
     utils.terminate_instance_and_exit(instance)
 
 
-# Wait for Health check after configuration is finished
+# # Wait for Health check after configuration is finished
 
 print('Waiting for MeiliSearch health check (may take a few minutes: config and reboot)')
 HEALTH = utils.wait_for_health_check(instance, timeout_seconds=600)
@@ -55,35 +81,6 @@ except Exception as err:
     print("   Exception: {}".format(err))
     utils.terminate_instance_and_exit(instance)
 print('   Version of meilisearch match!')
-
-# Create AMI Image
-
-if len(sys.argv) > 1:
-    AMI_BUILD_NAME = sys.argv[1]
-else:
-    AMI_BUILD_NAME = config.AMI_BUILD_NAME
-
-print('Triggering AMI Image creation...')
-image = boto3.client('ec2', config.AWS_DEFAULT_REGION).create_image(
-    InstanceId=instance.id,
-    Name=AMI_BUILD_NAME,
-    Description='Meilisearch {} running on {}.'.format(
-        config.MEILI_CLOUD_SCRIPTS_VERSION_TAG,
-        config.BASE_OS_NAME
-    )
-)
-print('   AMI creation triggered: {}'.format(image['ImageId']))
-
-# Wait for AMI creation
-
-print('Waiting for AMI creation...')
-state_code, ami = utils.wait_for_ami_available(
-    image['ImageId'], config.AWS_DEFAULT_REGION)
-if state_code == utils.STATUS_OK:
-    print('   AMI created: {}'.format(image['ImageId']))
-else:
-    print('   Error: {}. State: {}.'.format(state_code, ami.state))
-    utils.terminate_instance_and_exit(instance)
 
 # Terminate EC2 Instance
 

@@ -40,6 +40,15 @@ def wait_for_health_check(instance, timeout_seconds=None):
     return STATUS_TIMEOUT
 
 
+def check_meilisearch_version(droplet, version):
+    resp = requests.get(
+        "http://{}/version".format(droplet.public_ip_address)).json()
+    if resp["pkgVersion"] in version:
+        return
+    raise Exception(
+        "    The version of meilisearch ({}) does not match the droplet ({})".format(version, resp["pkgVersion"]))
+
+
 def terminate_instance_and_exit(instance):
     print('   Terminating instance {}'.format(instance.id))
     instance.terminate()
