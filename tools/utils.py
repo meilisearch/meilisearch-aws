@@ -1,19 +1,21 @@
 import datetime
-import requests
+import sys
 import time
+import requests
 import boto3
 
-STATUS_OK=0
-STATUS_TIMEOUT=1
-STATUS_ERROR=2
+STATUS_OK = 0
+STATUS_TIMEOUT = 1
+STATUS_ERROR = 2
 
-### INSTANCE
+# INSTANCE
+
 
 def wait_for_instance_running(instance, region, timeout_seconds=None):
     ec2 = boto3.resource('ec2', region)
     start_time = datetime.datetime.now()
     while timeout_seconds is None \
-        or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
+            or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
         instance = ec2.Instance(instance.id)
         if instance.state['Name'] != 'pending':
             if instance.state['Name'] == 'running':
@@ -22,33 +24,46 @@ def wait_for_instance_running(instance, region, timeout_seconds=None):
         time.sleep(1)
     return STATUS_TIMEOUT, None
 
+
 def wait_for_health_check(instance, timeout_seconds=None):
     start_time = datetime.datetime.now()
     while timeout_seconds is None \
-        or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
+            or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
         try:
-            resp = requests.get('http://{}/health'.format(instance.public_ip_address))
-            if resp.status_code >=200 and resp.status_code < 300:
+            resp = requests.get(
+                'http://{}/health'.format(instance.public_ip_address))
+            if resp.status_code >= 200 and resp.status_code < 300:
                 return STATUS_OK
-        except Exception as e:
-                pass
+        except Exception:
+            pass
         time.sleep(1)
-    return STATUS_TIMEOUT 
+    return STATUS_TIMEOUT
+
+
+def check_meilisearch_version(droplet, version):
+    resp = requests.get(
+        "http://{}/version".format(droplet.public_ip_address)).json()
+    if resp["pkgVersion"] in version:
+        return
+    raise Exception(
+        "    The version of meilisearch ({}) does not match the droplet ({})".format(version, resp["pkgVersion"]))
+
 
 def terminate_instance_and_exit(instance):
     print('   Terminating instance {}'.format(instance.id))
     instance.terminate()
     print('ENDING PROCESS WITH EXIT CODE 1')
-    exit(1)
+    sys.exit(1)
 
-### AMI
+# AMI
+
 
 def wait_for_ami_available(image_id, region, timeout_seconds=None):
     ec2 = boto3.resource('ec2', region)
     start_time = datetime.datetime.now()
     while timeout_seconds is None \
-        or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
-        ami  = ec2.Image(image_id)
+            or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
+        ami = ec2.Image(image_id)
         if ami.state != 'pending':
             if ami.state == 'available':
                 return STATUS_OK, ami
@@ -56,12 +71,13 @@ def wait_for_ami_available(image_id, region, timeout_seconds=None):
         time.sleep(1)
     return STATUS_TIMEOUT, None
 
+
 def make_ami_public(image_id, region, timeout_seconds=None):
     ec2 = boto3.resource('ec2', region)
     start_time = datetime.datetime.now()
     while timeout_seconds is None \
-        or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
-        ami  = ec2.Image(image_id)
+            or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
+        ami = ec2.Image(image_id)
         ami.modify_attribute(
             LaunchPermission={
                 'Add': [{'Group': 'all'}]
@@ -72,7 +88,8 @@ def make_ami_public(image_id, region, timeout_seconds=None):
         time.sleep(1)
     return STATUS_TIMEOUT, None
 
-### GENERAL
+# GENERAL
+
 
 def check_timeout(start_time, timeout_seconds):
     elapsed_time = datetime.datetime.now() - start_time
