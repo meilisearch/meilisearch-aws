@@ -33,7 +33,7 @@
 
 ## 🚀 How to deploy MeiliSearch on AWS
 
-If you want to learn how to deploy a MeiliSearch Instance on DigitalOcean visit [the dedicated page of our documentation](https://docs.meilisearch.com/create/how_to/aws.html).
+If you want to learn how to deploy a MeiliSearch instance on AWS visit [the dedicated page of our documentation](https://docs.meilisearch.com/create/how_to/aws.html).
 
 ## 🎁 Content of this repository
 
