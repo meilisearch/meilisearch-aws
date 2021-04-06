@@ -22,6 +22,10 @@ for img in images:
         ))
         break
 
+if MEILI_IMG is None:
+    raise Exception("Couldn't find the specified image: {}".format(
+        SNAPSHOT_NAME))
+
 # Deregister image
 
 print('Deregistering image...')
