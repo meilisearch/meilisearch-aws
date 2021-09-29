@@ -15,7 +15,7 @@ It's [Hacktoberfest month](https://blog.meilisearch.com/contribute-hacktoberfest
 
 🚀 If your PR gets accepted it will count into your participation to Hacktoberfest!
 
-✅ To be accepted it has either to have been merged, approved or tagged with the `hacktoberest-accepted` label.
+✅ To be accepted it has either to have been merged, approved or tagged with the `hacktoberfest-accepted` label.
 
 🧐 Don't forget to check the [quality standards](https://hacktoberfest.digitalocean.com/resources/qualitystandards), otherwise your PR could be marked as `spam` or `invalid`, and it will not be counted toward your participation in Hacktoberfest.
 
