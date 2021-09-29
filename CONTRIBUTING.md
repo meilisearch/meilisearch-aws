@@ -13,7 +13,7 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 
 It's [Hacktoberfest month](https://blog.meilisearch.com/contribute-hacktoberfest-2021/)! 🥳
 
-🚀 If your PR gets accepted it will count towards your participation in Hacktoberfest!
+🚀 If your PR gets accepted it will count into your participation to Hacktoberfest!
 
 ✅ To be accepted it has either to have been merged, approved or tagged with the `hacktoberfest-accepted` label.
 
