@@ -5,6 +5,15 @@ import config
 
 ec2 = boto3.resource('ec2', config.AWS_DEFAULT_REGION)
 
+# Remove analytics for CI jobs
+
+if len(sys.argv) > 1 and '--no-analytics' in sys.argv:
+    print('Launch build image without analytics.')
+    index = config.USER_DATA.find('--env development')
+    USER_DATA = config.USER_DATA[:index] + '--no-analytics=true ' + config.USER_DATA[index:]
+else:
+    USER_DATA = config.USER_DATA
+
 # Create EC2 instance to setup MeiliSearch
 
 print('Creating AWS EC2 instance')
@@ -16,7 +25,7 @@ instances = ec2.create_instances(
     SecurityGroups=[
         config.SECURITY_GROUP,
     ],
-    UserData=config.USER_DATA
+    UserData=USER_DATA
 )
 print('   Instance created. ID: {}'.format(instances[0].id))
 
@@ -58,7 +67,7 @@ print('   Version of meilisearch match!')
 
 # Create AMI Image
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 1 and sys.argv[1] != '--no-analytics':
     AMI_BUILD_NAME = sys.argv[1]
 else:
     AMI_BUILD_NAME = config.AMI_BUILD_NAME
