@@ -115,10 +115,10 @@ chmod 400 YourKeyPairPemFile.pem
 
 1. In [`tools/config.py`](tools/config.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
 
-2. Run the [`tools/build_image.py`](tools/build_image.py) script to build the AWS AMI:
+2. Run the [`tools/build_image.py`](tools/build_image.py) script to build the AWS AMI without analytics:
 
 ```bash
-python3 tools/build_image.py
+python3 tools/build_image.py --no-analytics
 ```
 
 This command will create an AWS EC2 Instance on MeiliSearch's account and configure it in order to prepare the MeiliSearch AMI. It will then create an AMI, which should be private, but ready to be published in the following steps. The instance will automatically be terminated after the AMI creation.<br>
@@ -126,6 +126,12 @@ The AMI name will be `MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`.
 
 3. Test the image: create a new EC2 instance based on the new AMI `MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`, and make sure everything is running smoothly. Remember to set your `Security Group`, or allow inbound traffic to ports `22`, `80` and `443`. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
 🗑 Don't forget to destroy the Droplet after the test.
+
+4. When you are ready to create the final image to release juste remove the `--no-analytics` option
+
+```bash
+python3 tools/build_image.py
+```
 
 ### Publish the AWS AMI and Release <!-- omit in TOC -->
 
