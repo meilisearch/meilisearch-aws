@@ -19,8 +19,8 @@ SECURITY_GROUP = 'MarketplaceSecurityGroup'
 
 # Setup environment and settings
 
-BASE_OS_NAME = 'Debian-10.3'
-DEBIAN_BASE_IMAGE_ID = 'ami-003f19e0e687de1cd'
+BASE_OS_NAME = 'Debian-10'
+DEBIAN_BASE_IMAGE_ID = 'ami-07d02ee1eeb0c996c'
 USER_DATA = requests.get(
     'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/providers/aws/cloud-config.yaml'
     .format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)
