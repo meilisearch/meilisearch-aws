@@ -3,15 +3,15 @@ import requests
 
 # Update with the MeiliSearch version TAG you want to build the AMI with
 
-MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v0.24.0'
+MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v0.25.0'
 
 # Update with the AMI id that you want to publish after TESTING
 
-PUBLISH_IMAGE_ID = 'ami-090d4f51fad8aac21'
+PUBLISH_IMAGE_ID = 'ami-06bc537d7c0c3c53c'
 
 # Update with the AMI name that you want to unpublish/delete worldwide
 
-DELETE_IMAGE_NAME = 'MeiliSearch-v0.23.0-Debian-10.3'
+DELETE_IMAGE_NAME = 'MeiliSearch-v0.23.1-Debian-10.3'
 
 # Update with your own Securityt Group and Key Pair name / file
 
@@ -19,8 +19,8 @@ SECURITY_GROUP = 'MarketplaceSecurityGroup'
 
 # Setup environment and settings
 
-BASE_OS_NAME = 'Debian-10.3'
-DEBIAN_BASE_IMAGE_ID = 'ami-003f19e0e687de1cd'
+BASE_OS_NAME = 'Debian-10'
+DEBIAN_BASE_IMAGE_ID = 'ami-07d02ee1eeb0c996c'
 USER_DATA = requests.get(
     'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/providers/aws/cloud-config.yaml'
     .format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)
