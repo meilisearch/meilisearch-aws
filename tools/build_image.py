@@ -14,7 +14,7 @@ if len(sys.argv) > 1 and '--no-analytics' in sys.argv:
 else:
     USER_DATA = config.USER_DATA
 
-# Create EC2 instance to setup MeiliSearch
+# Create EC2 instance to setup Meilisearch
 
 print('Creating AWS EC2 instance')
 instances = ec2.create_instances(
@@ -46,7 +46,7 @@ else:
 
 # Wait for Health check after configuration is finished
 
-print('Waiting for MeiliSearch health check (may take a few minutes: config and reboot)')
+print('Waiting for Meilisearch health check (may take a few minutes: config and reboot)')
 HEALTH = utils.wait_for_health_check(instance, timeout_seconds=600)
 if HEALTH == utils.STATUS_OK:
     print('   Instance is healthy')
@@ -63,7 +63,7 @@ try:
 except Exception as err:
     print("   Exception: {}".format(err))
     utils.terminate_instance_and_exit(instance)
-print('   Version of meilisearch match!')
+print('   Version of Meilisearch match!')
 
 # Create AMI Image
 
