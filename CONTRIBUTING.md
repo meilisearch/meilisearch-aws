@@ -1,6 +1,6 @@
 # Contributing <!-- omit in TOC -->
 
-First of all, thank you for contributing to MeiliSearch! The goal of this document is to provide everything you need to know in order to contribute to MeiliSearch and its different integrations.
+First of all, thank you for contributing to Meilisearch! The goal of this document is to provide everything you need to know in order to contribute to Meilisearch and its different integrations.
 
 - [Assumptions](#assumptions)
 - [How to Contribute](#how-to-contribute)
@@ -11,8 +11,8 @@ First of all, thank you for contributing to MeiliSearch! The goal of this docume
 ## Assumptions
 
 1. **You're familiar with [GitHub](https://github.com) and the [Pull Request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests)(PR) workflow.**
-2. **You've read the MeiliSearch [documentation](https://docs.meilisearch.com) and the [README](/README.md).**
-3. **You know about the [MeiliSearch community](https://docs.meilisearch.com/resources/contact.html). Please use this for help.**
+2. **You've read the Meilisearch [documentation](https://docs.meilisearch.com) and the [README](/README.md).**
+3. **You know about the [Meilisearch community](https://docs.meilisearch.com/resources/contact.html). Please use this for help.**
 
 ## How to Contribute
 
@@ -71,8 +71,8 @@ Some notes on GitHub PRs:
 
 ⚠️ The [cloud-scripts](https://github.com/meilisearch/cloud-scripts) repository should be upgraded to the new version before this repository can be updated and released.
 
-The release tags of this package follow exactly the MeiliSearch versions.<br>
-It means that, for example, the `v0.17.0` tag in this repository corresponds to the AWS AMI running MeiliSearch `v0.17.0`.
+The release tags of this package follow exactly the Meilisearch versions.<br>
+It means that, for example, the `v0.17.0` tag in this repository corresponds to the AWS AMI running Meilisearch `v0.17.0`.
 
 This repository currently does not provide any automated way to test and release the AWS AMI.<br>
 **Please, follow carefully the steps in the next sections before any release.**
@@ -102,7 +102,7 @@ chmod 400 YourKeyPairPemFile.pem
 
 ### Test before Releasing <!-- omit in TOC -->
 
-1. In [`tools/config.py`](tools/config.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new MeiliSearch version you want to release, in the format: `vX.X.X`. If you want to test with a MeiliSearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
+1. In [`tools/config.py`](tools/config.py), update the `MEILI_CLOUD_SCRIPTS_VERSION_TAG` variable value with the new Meilisearch version you want to release, in the format: `vX.X.X`. If you want to test with a Meilisearch RC, replace it by the right RC version tag (`vX.X.XrcX`).
 
 2. Run the [`tools/build_image.py`](tools/build_image.py) script to build the AWS AMI without analytics:
 
@@ -110,10 +110,10 @@ chmod 400 YourKeyPairPemFile.pem
 python3 tools/build_image.py --no-analytics
 ```
 
-This command will create an AWS EC2 Instance on MeiliSearch's account and configure it in order to prepare the MeiliSearch AMI. It will then create an AMI, which should be private, but ready to be published in the following steps. The instance will automatically be terminated after the AMI creation.<br>
-The AMI name will be `MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`.
+This command will create an AWS EC2 Instance on Meilisearch's account and configure it in order to prepare the Meilisearch AMI. It will then create an AMI, which should be private, but ready to be published in the following steps. The instance will automatically be terminated after the AMI creation.<br>
+The AMI name will be `Meilisearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`.
 
-3. Test the image: create a new EC2 instance based on the new AMI `MeiliSearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`, and make sure everything is running smoothly. Remember to set your `Security Group`, or allow inbound traffic to ports `22`, `80` and `443`. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
+3. Test the image: create a new EC2 instance based on the new AMI `Meilisearch-v.X.X.X-Debian-X-BUILD-(XX-XX-XXXX)`, and make sure everything is running smoothly. Remember to set your `Security Group`, or allow inbound traffic to ports `22`, `80` and `443`. Connect via SSH to the droplet and test the configuration script that is run automatically on login.<br>
 🗑 Don't forget to destroy the Droplet after the test.
 
 4. When you are ready to create the final image to release juste remove the `--no-analytics` option
@@ -124,7 +124,7 @@ python3 tools/build_image.py
 
 ### Publish the AWS AMI and Release <!-- omit in TOC -->
 
-⚠️ The AWS AMI should never be published with a `RC` version of MeiliSearch.
+⚠️ The AWS AMI should never be published with a `RC` version of Meilisearch.
 
 Once the tests in the previous section have been done:
 
@@ -153,7 +153,7 @@ git push origin vX.X.X
 
 ### Clean old AWS AMI images <!-- omit in TOC -->
 
-Make sure that the last 2 versions of MeiliSearch AMI are available and public in every AWS region. Our goal is to always offer the latest MeiliSearch version to AWS users, but we are keeping the previous version in case there is a bug or a problem in the latest one. Any other older version of the AMI must be deleted.
+Make sure that the last 2 versions of Meilisearch AMI are available and public in every AWS region. Our goal is to always offer the latest Meilisearch version to AWS users, but we are keeping the previous version in case there is a bug or a problem in the latest one. Any other older version of the AMI must be deleted.
 
 To proceed to delete older AMIs that should no longer be available, use the [`tools/unpublish_image.py`](tools/unpublish_image.py) script to delete every other AMI that is present in AWS:
 
@@ -165,9 +165,9 @@ To proceed to delete older AMIs that should no longer be available, use the [`to
 python3 tools/unpublish_image.py
 ```
 
-### Update the AWS AMI between two MeiliSearch Releases  <!-- omit in TOC -->
+### Update the AWS AMI between two Meilisearch Releases  <!-- omit in TOC -->
 
-It can happen that you need to release a new AWS AMI but you cannot wait for the new MeiliSearch release.<br>
+It can happen that you need to release a new AWS AMI but you cannot wait for the new Meilisearch release.<br>
 For example, the `v0.17.0` is already pushed but you find out you need to fix the installation script: you can't wait for the `v0.18.0` release and need to re-publish the `v0.17.0` AWS AMI.
 
 In this case:
