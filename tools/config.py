@@ -1,7 +1,7 @@
 from datetime import datetime
 import requests
 
-# Update with the MeiliSearch version TAG you want to build the AMI with
+# Update with the Meilisearch version TAG you want to build the AMI with
 
 MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v0.25.2'
 
@@ -26,11 +26,11 @@ USER_DATA = requests.get(
     .format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 ).text
 
-SNAPSHOT_NAME = 'MeiliSearch-{}-{}'.format(
+SNAPSHOT_NAME = 'Meilisearch-{}-{}'.format(
     MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
 AMI_BUILD_NAME = '{}-BUILD-{}'.format(SNAPSHOT_NAME,
                                       datetime.now().strftime('(%d-%m-%Y-%H-%M-%S)'))
-IMAGE_DESCRIPTION_NAME = 'MeiliSearch-{} running on {}'.format(
+IMAGE_DESCRIPTION_NAME = 'Meilisearch-{} running on {}'.format(
     MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
 
 INSTANCE_TYPE = 't2.small'
