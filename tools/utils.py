@@ -46,7 +46,7 @@ def check_meilisearch_version(droplet, version):
     if resp["pkgVersion"] in version:
         return
     raise Exception(
-        "    The version of meilisearch ({}) does not match the droplet ({})".format(version, resp["pkgVersion"]))
+        "    The version of Meilisearch ({}) does not match the droplet ({})".format(version, resp["pkgVersion"]))
 
 
 def terminate_instance_and_exit(instance):

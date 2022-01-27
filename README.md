@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="https://res.cloudinary.com/meilisearch/image/upload/v1612343595/SDKs/meilisearch_aws.svg" alt="MeiliSearch-AWS" width="200" height="200" />
+  <img src="https://raw.githubusercontent.com/meilisearch/integration-guides/main/assets/logos/meilisearch_aws.svg" alt="Meilisearch-AWS" width="200" height="200" />
 </p>
 
-<h1 align="center">MeiliSearch AWS</h1>
+<h1 align="center">Meilisearch AWS</h1>
 
 <h4 align="center">
-  <a href="https://github.com/meilisearch/MeiliSearch">MeiliSearch</a> |
+  <a href="https://github.com/meilisearch/meilisearch">Meilisearch</a> |
   <a href="https://docs.meilisearch.com">Documentation</a> |
   <a href="https://slack.meilisearch.com">Slack</a> |
   <a href="https://roadmap.meilisearch.com/tabs/1-under-consideration">Roadmap</a> |
@@ -18,27 +18,27 @@
   <a href="https://app.bors.tech/repositories/34949"><img src="https://bors.tech/images/badge_small.svg" alt="Bors enabled"></a>
 </p>
 
-<p align="center">⚡ MeiliSearch tools for AWS integration</p>
+<p align="center">⚡ Meilisearch tools for AWS integration</p>
 
-**MeiliSearch AWS** is a set of tools and scripts to improve user deployment of MeiliSearch on [AWS](https://aws.amazon.com/).
+**Meilisearch AWS** is a set of tools and scripts to improve user deployment of Meilisearch on [AWS](https://aws.amazon.com/).
 
-**MeiliSearch** is an open-source search engine. [Discover what MeiliSearch is!](https://github.com/meilisearch/MeiliSearch)
+**Meilisearch** is an open-source search engine. [Discover what Meilisearch is!](https://github.com/meilisearch/meilisearch)
 
 
 ## Table of Contents <!-- omit in toc -->
 
-- [🚀 How to deploy MeiliSearch on AWS](#-how-to-deploy-meilisearch-on-aws)
+- [🚀 How to deploy Meilisearch on AWS](#-how-to-deploy-meilisearch-on-aws)
 - [🎁 Content of this repository](#-content-of-this-repository)
 - [📖 Documentation](#-documentation)
 - [⚙️ Development Workflow and Contributing](#️-development-workflow-and-contributing)
 
-## 🚀 How to deploy MeiliSearch on AWS
+## 🚀 How to deploy Meilisearch on AWS
 
-If you want to learn how to deploy a MeiliSearch instance on AWS visit [the dedicated page of our documentation](https://docs.meilisearch.com/create/how_to/aws.html).
+If you want to learn how to deploy a Meilisearch instance on AWS visit [the dedicated page of our documentation](https://docs.meilisearch.com/create/how_to/aws.html).
 
 ## 🎁 Content of this repository
 
-This repository contains a few tools and scripts used mainly by the MeiliSearch team, aiming to provide our users simple ways to deploy and configure MeiliSearch in the cloud. As our heart resides on the Open Source community, we maintain several of this tools as open source repository.
+This repository contains a few tools and scripts used mainly by the Meilisearch team, aiming to provide our users simple ways to deploy and configure Meilisearch in the cloud. As our heart resides on the Open Source community, we maintain several of this tools as open source repository.
 
 ## 📖 Documentation
 
@@ -52,4 +52,4 @@ If you want to know more about the development workflow or want to contribute, p
 
 <hr>
 
-**MeiliSearch** provides and maintains many **SDKs and Integration tools** like this one. We want to provide everyone with an **amazing search experience for any kind of project**. If you want to contribute, make suggestions, or just know what's going on right now, visit us in the [integration-guides](https://github.com/meilisearch/integration-guides) repository.
+**Meilisearch** provides and maintains many **SDKs and Integration tools** like this one. We want to provide everyone with an **amazing search experience for any kind of project**. If you want to contribute, make suggestions, or just know what's going on right now, visit us in the [integration-guides](https://github.com/meilisearch/integration-guides) repository.
