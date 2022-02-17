@@ -10,7 +10,7 @@ ec2 = boto3.resource('ec2', config.AWS_DEFAULT_REGION)
 if len(sys.argv) > 1 and '--no-analytics' in sys.argv:
     print('Launch build image without analytics.')
     index = config.USER_DATA.find('--env development')
-    USER_DATA = config.USER_DATA[:index] + '--no-analytics=true ' + config.USER_DATA[index:]
+    USER_DATA = config.USER_DATA[:index] + '--no-analytics ' + config.USER_DATA[index:]
 else:
     USER_DATA = config.USER_DATA
 
