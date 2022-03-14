@@ -7,11 +7,11 @@ MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v0.26.0'
 
 # Update with the AMI id that you want to publish after TESTING
 
-PUBLISH_IMAGE_ID = 'ami-0196ad076af7e4f20'
+PUBLISH_IMAGE_ID = 'ami-0c88efbad31e6477a'
 
 # Update with the AMI name that you want to unpublish/delete worldwide
 
-DELETE_IMAGE_NAME = 'MeiliSearch-v0.22.0-Debian-10.3'
+DELETE_IMAGE_NAME = 'MeiliSearch-v0.24.0-Debian-10.3'
 
 # Update with your own Securityt Group and Key Pair name / file
 
