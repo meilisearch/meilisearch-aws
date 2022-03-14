@@ -3,7 +3,7 @@ import requests
 
 # Update with the Meilisearch version TAG you want to build the AMI with
 
-MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v0.25.2'
+MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v0.26.0'
 
 # Update with the AMI id that you want to publish after TESTING
 
