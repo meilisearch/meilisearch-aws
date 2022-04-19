@@ -17,6 +17,11 @@ def wait_for_instance_running(instance, region, timeout_seconds=None):
     while timeout_seconds is None \
             or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
         instance = ec2.Instance(instance.id)
+        if instance:
+            print(instance.state)
+            print(instance)
+        else:
+            print('Instance not found')
         if instance.state['Name'] != 'pending':
             if instance.state['Name'] == 'running':
                 return STATUS_OK, instance.state['Name']
