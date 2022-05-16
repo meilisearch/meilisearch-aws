@@ -22,16 +22,13 @@ SECURITY_GROUP = 'MarketplaceSecurityGroup'
 BASE_OS_NAME = 'Debian-10'
 DEBIAN_BASE_IMAGE_ID = 'ami-07d02ee1eeb0c996c'
 USER_DATA = requests.get(
-    'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{}/scripts/providers/aws/cloud-config.yaml'
-    .format(MEILI_CLOUD_SCRIPTS_VERSION_TAG)
+    f'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{MEILI_CLOUD_SCRIPTS_VERSION_TAG}/scripts/providers/aws/cloud-config.yaml'
 ).text
 
-SNAPSHOT_NAME = 'Meilisearch-{}-{}'.format(
-    MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
-AMI_BUILD_NAME = '{}-BUILD-{}'.format(SNAPSHOT_NAME,
-                                      datetime.now().strftime('(%d-%m-%Y-%H-%M-%S)'))
-IMAGE_DESCRIPTION_NAME = 'Meilisearch-{} running on {}'.format(
-    MEILI_CLOUD_SCRIPTS_VERSION_TAG, BASE_OS_NAME)
+SNAPSHOT_NAME = f'Meilisearch-{MEILI_CLOUD_SCRIPTS_VERSION_TAG}-{BASE_OS_NAME}'
+SNAPSHOT_DATE=datetime.now().strftime('(%d-%m-%Y-%H-%M-%S)')
+AMI_BUILD_NAME = f'{SNAPSHOT_NAME}-BUILD-{SNAPSHOT_DATE}'
+IMAGE_DESCRIPTION_NAME = f'Meilisearch-{MEILI_CLOUD_SCRIPTS_VERSION_TAG} running on {BASE_OS_NAME}'
 
 INSTANCE_TYPE = 't2.small'
 SSH_USER = 'admin'

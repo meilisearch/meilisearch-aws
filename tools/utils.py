@@ -36,7 +36,7 @@ def wait_for_health_check(instance, timeout_seconds=None):
             or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:
         try:
             resp = requests.get(
-                'http://{}/health'.format(instance.public_ip_address))
+                f'http://{instance.public_ip_address}/health')
             if resp.status_code >= 200 and resp.status_code < 300:
                 return STATUS_OK
         except Exception:
@@ -47,15 +47,15 @@ def wait_for_health_check(instance, timeout_seconds=None):
 
 def check_meilisearch_version(droplet, version):
     resp = requests.get(
-        "http://{}/version".format(droplet.public_ip_address)).json()
-    if resp["pkgVersion"] in version:
+        f"http://{droplet.public_ip_address}/version").json()
+    if resp['pkgVersion'] in version:
         return
     raise Exception(
-        "    The version of Meilisearch ({}) does not match the droplet ({})".format(version, resp["pkgVersion"]))
+        f"    The version of Meilisearch ({version}) does not match the droplet ({resp['pkgVersion']})")
 
 
 def terminate_instance_and_exit(instance):
-    print('   Terminating instance {}'.format(instance.id))
+    print(f'   Terminating instance {instance.id}')
     instance.terminate()
     print('ENDING PROCESS WITH EXIT CODE 1')
     sys.exit(1)

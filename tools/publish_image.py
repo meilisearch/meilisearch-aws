@@ -20,11 +20,10 @@ for aws_region in config.AWS_REGIONS:
     )
     if response['ResponseMetadata']['HTTPStatusCode'] == 200:
         AWS_REGION_AMIS[aws_region] = response['ImageId']
-        print('   AMI copy triggered: {} - {}'.format(aws_region,
-              response['ImageId']))
+        print(f"   AMI copy triggered: {aws_region} - {response['ImageId']}")
     else:
-        print('   Error: AMI could not be created for: {}.'.format(aws_region))
-        print('   {}'.format(response['ResponseMetadata']['HTTPStatusCode']))
+        print(f'   Error: AMI could not be created for: {aws_region}.')
+        print(f"   {response['ResponseMetadata']['HTTPStatusCode']}")
 
 # Wait for propagated AMIs creation
 
@@ -32,9 +31,9 @@ print('Waiting for each AWS region AMI creation...')
 for region, propagated_ami in AWS_REGION_AMIS.items():
     state_code, ami = utils.wait_for_ami_available(propagated_ami, region)
     if state_code == utils.STATUS_OK:
-        print('   AMI created: {} - {}'.format(region, propagated_ami))
+        print(f'   AMI created: {region} - {propagated_ami}')
     else:
-        print('   Error: {} - {}.'.format(region, propagated_ami))
+        print(f'   Error: {region} - {propagated_ami}.')
         del AWS_REGION_AMIS[region]
         UNSUCCESSFUL_AWS_REGION_AMIS[region] = propagated_ami
 
@@ -43,15 +42,15 @@ print('Making each AMI Public...')
 for region, propagated_ami in AWS_REGION_AMIS.items():
     state_code, public = utils.make_ami_public(propagated_ami, region)
     if state_code == utils.STATUS_OK:
-        print('   AMI published: {} - {}'.format(region, propagated_ami))
+        print(f'   AMI published: {region} - {propagated_ami}')
     else:
-        print('   Error: {} - {}.'.format(region, propagated_ami))
+        print(f'   Error: {region} - {propagated_ami}.')
         del AWS_REGION_AMIS[region]
         UNSUCCESSFUL_AWS_REGION_AMIS[region] = propagated_ami
 
-print('Successfully created {} AMIs:'.format(len(AWS_REGION_AMIS)))
+print(f'Successfully created {len(AWS_REGION_AMIS)} AMIs:')
 for region, propagated_ami in AWS_REGION_AMIS.items():
-    print('   {}'.format(region))
-print('Error creating {} AMIs:'.format(len(UNSUCCESSFUL_AWS_REGION_AMIS)))
+    print('   {region}')
+print(f'Error creating {len(UNSUCCESSFUL_AWS_REGION_AMIS)} AMIs:')
 for region, propagated_ami in UNSUCCESSFUL_AWS_REGION_AMIS.items():
-    print('   {}'.format(region))
+    print(f'   {region}')
