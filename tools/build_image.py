@@ -27,7 +27,7 @@ instances = ec2.create_instances(
     ],
     UserData=USER_DATA
 )
-print('   Instance created. ID: {}'.format(instances[0].id))
+print(f'   Instance created. ID: {instances[0].id}')
 
 
 # Wait for EC2 instance to be 'running'
@@ -36,11 +36,11 @@ print('Waiting for AWS EC2 instance state to be "running"')
 instance = ec2.Instance(instances[0].id)
 state_code, state = utils.wait_for_instance_running(
     instance, config.AWS_DEFAULT_REGION, timeout_seconds=600)
-print('   Instance state: {}'.format(instance.state['Name']))
+print(f"   Instance state: {instance.state['Name']}")
 if state_code == utils.STATUS_OK:
-    print('   Instance IP: {}'.format(instance.public_ip_address))
+    print(f'   Instance IP: {instance.public_ip_address}')
 else:
-    print('   Error: {}. State: {}.'.format(state_code, state))
+    print(f'   Error: {state_code}. State: {state}.')
     utils.terminate_instance_and_exit(instance)
 
 
@@ -61,7 +61,7 @@ try:
     utils.check_meilisearch_version(
         instance, config.MEILI_CLOUD_SCRIPTS_VERSION_TAG)
 except Exception as err:
-    print("   Exception: {}".format(err))
+    print(f"   Exception: {err}")
     utils.terminate_instance_and_exit(instance)
 print('   Version of Meilisearch match!')
 
@@ -76,12 +76,9 @@ print('Triggering AMI Image creation...')
 image = boto3.client('ec2', config.AWS_DEFAULT_REGION).create_image(
     InstanceId=instance.id,
     Name=AMI_BUILD_NAME,
-    Description='Meilisearch {} running on {}.'.format(
-        config.MEILI_CLOUD_SCRIPTS_VERSION_TAG,
-        config.BASE_OS_NAME
-    )
+    Description=f'Meilisearch {config.MEILI_CLOUD_SCRIPTS_VERSION_TAG} running on {config.BASE_OS_NAME}.'
 )
-print('   AMI creation triggered: {}'.format(image['ImageId']))
+print(f"   AMI creation triggered: {image['ImageId']}")
 
 # Wait for AMI creation
 
@@ -89,9 +86,9 @@ print('Waiting for AMI creation...')
 state_code, ami = utils.wait_for_ami_available(
     image['ImageId'], config.AWS_DEFAULT_REGION)
 if state_code == utils.STATUS_OK:
-    print('   AMI created: {}'.format(image['ImageId']))
+    print(f"   AMI created: {image['ImageId']}")
 else:
-    print('   Error: {}. State: {}.'.format(state_code, ami.state))
+    print(f'   Error: {state_code}. State: {ami.state}.')
     utils.terminate_instance_and_exit(instance)
 
 # Terminate EC2 Instance
