@@ -1,10 +1,10 @@
 boto3==1.21.42
 botocore==1.24.42
-certifi==2021.10.8
+certifi==2022.5.18.1
 chardet==4.0.0
 idna==3.3
 jmespath==1.0.0
-pylint==2.13.5
+pylint==2.14.0
 python-dateutil==2.8.2
 requests==2.27.1
 s3transfer==0.6.0
