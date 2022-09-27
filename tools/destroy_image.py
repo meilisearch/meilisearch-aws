@@ -16,7 +16,7 @@ for img in images:
     if img['Name'] == SNAPSHOT_NAME:
         MEILI_IMG = boto3.resource(
             'ec2', config.AWS_DEFAULT_REGION).Image(id=img['ImageId'])
-        print(f'Found image: {MEILI_IMG.name,} created at {MEILI_IMG.creation_date}')
+        print(f'Found image: {MEILI_IMG.name} created at {MEILI_IMG.creation_date}')
         break
 
 if MEILI_IMG is None:
