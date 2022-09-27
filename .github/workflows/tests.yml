@@ -29,11 +29,12 @@ jobs:
         python-version: 3.7
     - name: Install dependencies
       run: pip3 install -r requirements.txt
+    - name: Echo image name
+      run: echo "IMAGE_NAME=meilisearch_aws_ci_test_$(date +'%d-%m-%Y-%H-%M-%S')"
     - name: Set image name as env variable
-      run: |
-        echo "IMAGE_NAME=meilisearch_aws_ci_test_$(date +'%d-%m-%Y-%H-%M-%S')"
-        echo "IMAGE_NAME=meilisearch_aws_ci_test_$(date +'%d-%m-%Y-%H-%M-%S')" >> $GITHUB_ENV
-        echo $GITHUB_ENV
+      run: echo "IMAGE_NAME=meilisearch_aws_ci_test_$(date +'%d-%m-%Y-%H-%M-%S')" >> $GITHUB_ENV
+    - name: Echo github env
+      run: echo $GITHUB_ENV
     - name: Build image
       run: python3 tools/build_image.py ${{ env.IMAGE_NAME }} --no-analytics
     - name: Test image
