@@ -7,7 +7,7 @@ MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v0.29.0'
 
 # Update with the AMI id that you want to publish after TESTING
 
-PUBLISH_IMAGE_ID = 'ami-0c5702d1a96f2d307'
+PUBLISH_IMAGE_ID = 'ami-0f1140ad105ac14d6'
 
 # Update with the AMI name that you want to unpublish/delete worldwide
 
