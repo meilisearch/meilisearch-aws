@@ -3,7 +3,7 @@ import requests
 
 # Update with the Meilisearch version TAG you want to build the AMI with
 
-MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v0.29.0'
+MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v0.29.1'
 
 # Update with the AMI id that you want to publish after TESTING
 
@@ -19,8 +19,8 @@ SECURITY_GROUP = 'MarketplaceSecurityGroup'
 
 # Setup environment and settings
 
-BASE_OS_NAME = 'Ubuntu-20.04'
-UBUNTU_BASE_IMAGE_ID = 'ami-0149b2da6ceec4bb0'
+BASE_OS_NAME = 'Debian-10'
+DEBIAN_BASE_IMAGE_ID = 'ami-07d02ee1eeb0c996c'
 USER_DATA = requests.get(
     f'https://raw.githubusercontent.com/meilisearch/cloud-scripts/{MEILI_CLOUD_SCRIPTS_VERSION_TAG}/scripts/providers/aws/cloud-config.yaml'
 ).text
