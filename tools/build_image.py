@@ -18,7 +18,7 @@ else:
 
 print('Creating AWS EC2 instance')
 instances = ec2.create_instances(
-    ImageId=config.UBUNTU_BASE_IMAGE_ID,
+    ImageId=config.DEBIAN_BASE_IMAGE_ID,
     MinCount=1,
     MaxCount=1,
     InstanceType=config.INSTANCE_TYPE,
