@@ -1,7 +1,7 @@
 boto3==1.26.18
 botocore==1.29.18
 certifi==2022.9.24
-chardet==5.0.0
+chardet==5.1.0
 idna==3.4
 jmespath==1.0.1
 pylint==2.14.3
