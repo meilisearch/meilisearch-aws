@@ -11,8 +11,7 @@ STATUS_ERROR = 2
 # INSTANCE
 
 
-def wait_for_instance_running(instance, region, timeout_seconds=None):
-    ec2 = boto3.resource('ec2', region)
+def wait_for_instance_running(instance, ec2, timeout_seconds=None):
     start_time = datetime.datetime.now()
     while timeout_seconds is None \
             or check_timeout(start_time, timeout_seconds) is not STATUS_TIMEOUT:

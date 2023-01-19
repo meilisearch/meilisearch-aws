@@ -46,7 +46,7 @@ print(f'   Instance created. ID: {instances[0].id}')
 print('Waiting for AWS EC2 instance state to be "running"')
 instance = ec2.Instance(instances[0].id)
 state_code, state = utils.wait_for_instance_running(
-    instance, config.AWS_DEFAULT_REGION, timeout_seconds=600)
+    instance, ec2, timeout_seconds=1000)
 print(f"   Instance state: {instance.state['Name']}")
 if state_code == utils.STATUS_OK:
     print(f'   Instance IP: {instance.public_ip_address}')
