@@ -3,15 +3,15 @@ import requests
 
 # Update with the Meilisearch version TAG you want to build the AMI with
 
-MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v0.30.5'
+MEILI_CLOUD_SCRIPTS_VERSION_TAG = 'v1.0.0'
 
 # Update with the AMI id that you want to publish after TESTING
 
-PUBLISH_IMAGE_ID = 'ami-0f42d842bcb56330d'
+PUBLISH_IMAGE_ID = 'ami-063e5bf0d104e8d8f'
 
 # Update with the AMI name that you want to unpublish/delete worldwide
 
-DELETE_IMAGE_NAME = 'Meilisearch-v0.30.4-Debian-10'
+DELETE_IMAGE_NAME = 'Meilisearch-v0.28.1-Debian-10'
 
 # Update with your own Securityt Group and Key Pair name / file
 
