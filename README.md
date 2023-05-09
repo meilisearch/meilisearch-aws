@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/meilisearch/integration-guides/main/assets/logos/meilisearch_aws.svg" alt="Meilisearch-AWS" width="200" height="200" />
 </p>
 
-<h1 align="center">Meilisearch AWS</h1>
+<h1 align="center">[DEPRECATED] Meilisearch AWS</h1>
 
 <h4 align="center">
   <a href="https://github.com/meilisearch/meilisearch">Meilisearch</a> |
@@ -19,6 +19,12 @@
 </p>
 
 <p align="center">⚡ Meilisearch tools for AWS integration</p>
+
+---------
+
+⚠️ **Please note that this repository is no longer being maintained and has been deprecated. We have created this new repository [cloud-providers](https://github.com/meilisearch/cloud-providers) instead.**
+
+---------
 
 **Meilisearch AWS** is a set of tools and scripts to improve user deployment of Meilisearch on [AWS](https://aws.amazon.com/).
 
