@@ -22,7 +22,7 @@
 
 ---------
 
-⚠️ **Please note that this repository is no longer being maintained and has been deprecated. We have created this new repository [cloud-providers](https://github.com/meilisearch/cloud-providers) instead.**
+⚠️ **Please note that this repository is no longer being maintained and has been deprecated. AWS is still a provider we maintain integration with, and this is the new repository [cloud-providers](https://github.com/meilisearch/cloud-providers).**
 
 ---------
 
